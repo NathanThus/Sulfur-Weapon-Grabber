@@ -4,7 +4,7 @@ using PerfectRandom.Sulfur.Core.Stats;
 
 public static class EnumConversion
 {
-    public static string ToProjectileTypeString(ProjectileTypes type) => type switch
+    public static string ProjectileTypeToString(ProjectileTypes type) => type switch
     {
         ProjectileTypes.None => "None",
         ProjectileTypes.Bullet => "Bullet",
@@ -17,7 +17,7 @@ public static class EnumConversion
         _ => "Unknown"
     };
 
-    public static string ToWeaponClassString(WeaponTypes type) => type switch
+    public static string WeaponClassToString(WeaponTypes type) => type switch
     {
         WeaponTypes.None => "None",
         WeaponTypes.AssaultRifle => "AssaultRifle",
@@ -35,7 +35,7 @@ public static class EnumConversion
         _ => "Unknown",
     };
 
-    public static string ToCaliberNameString(CaliberTypes type) => type switch
+    public static string CaliberTypeToString(CaliberTypes type) => type switch
     {
         CaliberTypes.None => "None",
         CaliberTypes._9mm => "9mm",
@@ -50,7 +50,7 @@ public static class EnumConversion
         _ => "Unknown"
     };
 
-    public static string ToDamageTypeString(DamageTypes type) => type switch
+    public static string DamageTypeToString(DamageTypes type) => type switch
     {
         DamageTypes.None => "None",
         DamageTypes.Critical => "Critical",
