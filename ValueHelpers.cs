@@ -14,16 +14,14 @@ using UnityEngine;
 
 class ValueHelpers
 {
-    public float GetCaliberRecoil(List<CaliberKickDefinition> kickPowerList, string caliber)
+    public Dictionary<string, float> GetCaliberRecoil(List<CaliberKickDefinition> kickPowerList)
     {
+        Dictionary<string, float> recoil = [];
         foreach (var kick in kickPowerList)
         {
-            if (kick.Caliber.ToString() == caliber)
-            {
-                return kick.KickPower;
-            }
+            recoil.Add(EnumConversion.CaliberTypeToString(kick.Caliber), kick.KickPower);
         }
-        return 0;
+        return recoil;
     }
 
     public float CalculatedBaseWeaponDamage(WeaponSO weaponSO, CaliberType[] Caliberdatabase)
