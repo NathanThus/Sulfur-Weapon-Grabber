@@ -40,7 +40,6 @@ public class Plugin : BaseUnityPlugin
         }
 
         List<WeaponDTO> weaponList = [];
-        Logger.LogError(weaponDatabase.Count);
 
         foreach (var itemDef in weaponDatabase)
         {
@@ -65,11 +64,5 @@ public class Plugin : BaseUnityPlugin
 
         string path = Path.Combine(Paths.GameRootPath, nameof(weaponList) + ".json");
         File.WriteAllText(path, json);
-    }
-
-    // TBD
-    private float CalculateDamage(WeaponSO weaponSO)
-    {
-        return Caliberdatabase[(int)weaponSO.caliber].baseDamage * WeaponTypeDataExt.GetDamageMultiplier(weaponSO.weaponType) * weaponSO.damageMultiplier;
     }
 }
