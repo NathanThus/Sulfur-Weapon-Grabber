@@ -33,4 +33,19 @@ public static class EnumConversion
         WeaponTypes.End => "End",
         _ => "Unknown",
     };
+
+    public static string ToCaliberNameString(CaliberTypes type) => type switch
+    {
+        CaliberTypes.None => "None",
+        CaliberTypes._9mm => "9mm",
+        CaliberTypes._12ga => "12ga",
+        CaliberTypes._556mm => "556mm",
+        CaliberTypes._762mm => "762mm",
+        CaliberTypes._50BMG => "50BMG",
+        CaliberTypes.Arrow => "Arrow",
+        CaliberTypes.Laser => "Laser",
+        CaliberTypes.Shrapnel => "Shrapnel",
+        CaliberTypes.End => "End",
+        _ => "Unknown"
+    };
 }
