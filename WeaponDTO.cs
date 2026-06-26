@@ -10,4 +10,15 @@ public class WeaponDTO
     public float caliberDamage;
     public float innateDamageMultiplier;
     public float weaponTypeMultiplier;
+    public float numberOfProjectiles;
+    public float reloadTime;
+    public float roundsPerMinute;
+    public bool usesGravity = true;
+    public float spread;
+    public float ammoMax;
+    public float ammoPershot;
+    public float bulletSpeed;
+    public float recoil;
+    public float weight;
+    public float loudness;
 }
