@@ -18,4 +18,6 @@ public class WeaponDTO
     public float ammoPershot;
     public float bulletSpeed;
     public float recoil;
+    public float weight;
+    public float loudness;
 }
