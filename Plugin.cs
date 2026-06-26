@@ -18,6 +18,7 @@ public class Plugin : BaseUnityPlugin
     internal static new ManualLogSource Logger;
     CaliberType[] Caliberdatabase;
     List<ItemDefinition> weaponDatabase;
+    DatabaseGrabber grabber = new();
     private IEnumerator Start()
     {
         while (!StaticInstance<AsyncAssetLoading>.Instance.loadingDone)
@@ -25,19 +26,8 @@ public class Plugin : BaseUnityPlugin
             yield return null;
         }
 
-        weaponDatabase = StaticInstance<AsyncAssetLoading>.Instance.itemDatabase.GetRawList();
-        if (weaponDatabase == null)
-        {
-            Logger.LogError("Database not found");
-            throw new ArgumentNullException(nameof(weaponDatabase));
-        }
-        
-        Caliberdatabase = StaticInstance<AsyncAssetLoading>.Instance.assetSets.caliberTypes;
-        if (Caliberdatabase == null)
-        {
-            Logger.LogError("Database not found");
-            throw new ArgumentNullException(nameof(Caliberdatabase));
-        }
+        weaponDatabase = grabber.GetListOfItemDefinitions();
+        Caliberdatabase = grabber.GetCaliberDatabase();
 
         List<WeaponDTO> weaponList = [];
 
