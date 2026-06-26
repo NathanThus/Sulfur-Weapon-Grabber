@@ -28,4 +28,5 @@ public class WeaponDTO
     public float loudness;
     public float calculatedWeaponDamage;
     public string baseCaliber;
+    public Dictionary<string, float> recoil;
 }
