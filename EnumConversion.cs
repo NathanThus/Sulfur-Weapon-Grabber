@@ -1,5 +1,6 @@
 using PerfectRandom.Sulfur.Core;
 using PerfectRandom.Sulfur.Core.Items;
+using PerfectRandom.Sulfur.Core.Stats;
 
 public static class EnumConversion
 {
@@ -46,6 +47,29 @@ public static class EnumConversion
         CaliberTypes.Laser => "Laser",
         CaliberTypes.Shrapnel => "Shrapnel",
         CaliberTypes.End => "End",
+        _ => "Unknown"
+    };
+
+    public static string ToDamageTypeString(DamageTypes type) => type switch
+    {
+        DamageTypes.None => "None",
+        DamageTypes.Critical => "Critical",
+        DamageTypes.Electric => "Electric",
+        DamageTypes.Explosive => "Explosive",
+        DamageTypes.Fire => "Fire",
+        DamageTypes.Frost => "Frost",
+        DamageTypes.Holy => "Holy",
+        DamageTypes.Normal => "Normal",
+        DamageTypes.Physics => "Physics",
+        DamageTypes.Poison => "Poison",
+        DamageTypes.Punish => "Punish",
+        DamageTypes.Shadow => "Shadow",
+        DamageTypes.Suffocate => "Suffocate",
+        DamageTypes.Water => "Water",
+        DamageTypes.Sacrifice => "Sacrifice",
+        DamageTypes.Dark => "Dark",
+        DamageTypes.Bleed => "Bleed",
+        DamageTypes.End => "End",
         _ => "Unknown"
     };
 }
