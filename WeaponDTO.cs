@@ -18,12 +18,6 @@ public class WeaponDTO
     public float ammoMax;
     public float ammoPershot;
     public float bulletSpeed;
-    public float recoil9mm;
-    public float recoil556;
-    public float recoil762;
-    public float recoil50bmg;
-    public float recoil12ga;
-    public float recoilEnergy = 0;
     public float weight;
     public float loudness;
     public float calculatedWeaponDamage;
