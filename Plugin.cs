@@ -43,10 +43,7 @@ public class Plugin : BaseUnityPlugin
             {
                 continue;
             }
-            if (itemDef?.deprecated == true)
-            {
-                continue;
-            }
+            
             if (itemDef is WeaponSO)
             {
                 var weaponSO = itemDef as WeaponSO;
@@ -76,6 +73,7 @@ public class Plugin : BaseUnityPlugin
                     projectileType = EnumConversion.ProjectileTypeToString(weaponSO.projectileType),
                     weaponType = EnumConversion.WeaponClassToString(weaponSO.weaponType),
                     deprecated = itemDef.deprecated,
+                    itemType = itemDef.ItemType
                 });
             }
         }
