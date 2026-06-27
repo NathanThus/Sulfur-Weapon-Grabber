@@ -22,14 +22,14 @@ public class WeaponDTO
     public Dictionary<string, float> recoil;
     public Dictionary<string, float> spread;
     public float reloadTime;
-    public bool usesGravity = true;
     public float ammoPerShot;
     public float bulletSpeed;
     public HoldableWeightClass weightClass;
-    public StatModifier weaponWeight;
+    //public StatModifier weaponWeight;
     public float loudness;
     public int shotsToReachFullSpread;
     public float timeToCooldownSpread;
     public string damageType;
     public string projectileType;
+    public bool deprecated;
 }
