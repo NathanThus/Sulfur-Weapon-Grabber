@@ -72,8 +72,6 @@ public class Plugin : BaseUnityPlugin
                     damageType = EnumConversion.DamageTypeToString(weaponSO.damageType),
                     projectileType = EnumConversion.ProjectileTypeToString(weaponSO.projectileType),
                     weaponType = EnumConversion.WeaponClassToString(weaponSO.weaponType),
-                    deprecated = itemDef.deprecated,
-                    itemType = itemDef.ItemType
                 });
             }
         }

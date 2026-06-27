@@ -31,5 +31,4 @@ public class WeaponDTO
     public float timeToCooldownSpread;
     public string damageType;
     public string projectileType;
-    public bool deprecated;
 }
