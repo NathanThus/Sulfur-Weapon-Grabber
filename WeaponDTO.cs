@@ -1,26 +1,30 @@
 using System;
 using System.Collections.Generic;
+using PerfectRandom.Sulfur.Core.CharacterStats;
 using PerfectRandom.Sulfur.Core.Items;
 using PerfectRandom.Sulfur.Core.Stats;
+using PerfectRandom.Sulfur.Core.Weapons;
 
 [Serializable]
 public class WeaponDTO
 {
     public string name;
-    public float caliberDamage;
+    public string displayName;
+    public string baseCaliber;
     public float innateDamageMultiplier;
     public float weaponTypeMultiplier;
+    public float baseCaliberDamagePerProjectile;
+    public float calculatedWeaponDamagePerProjectile;
     public float numberOfProjectiles;
-    public float reloadTime;
-    public float roundsPerMinute;
-    public bool usesGravity = true;
-    public float spread;
     public float ammoMax;
-    public float ammoPershot;
-    public float bulletSpeed;
-    public float weight;
-    public float loudness;
-    public float calculatedWeaponDamage;
-    public string baseCaliber;
+    public float roundsPerMinute;
     public Dictionary<string, float> recoil;
+    public Dictionary<string, float> spread;
+    public float reloadTime;
+    public bool usesGravity = true;
+    public float ammoPerShot;
+    public float bulletSpeed;
+    public HoldableWeightClass weightClass;
+    public StatModifier weaponWeight;
+    public float loudness;
 }
