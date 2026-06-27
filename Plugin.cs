@@ -44,15 +44,16 @@ public class Plugin : BaseUnityPlugin
             if (itemDef is WeaponSO)
             {
                 var weaponSO = itemDef as WeaponSO;
+                var caliberEntry = grabber.GetCaliberEntry(weaponSO);
                 weaponList.Add(new WeaponDTO
                 {
                     name = weaponSO.displayName,
                     baseCaliber = EnumConversion.CaliberTypeToString(weaponSO.caliber),
-                    caliberDamage = Caliberdatabase[(int)weaponSO.caliber].baseDamage,
+                    caliberDamage = caliberEntry.baseDamage,
                     innateDamageMultiplier = weaponSO.damageMultiplier,
                     weaponTypeMultiplier = WeaponTypeDataExt.GetDamageMultiplier(weaponSO.weaponType),
-                    calculatedWeaponDamage = helper.CalculatedBaseWeaponDamage(weaponSO, Caliberdatabase),
-                    numberOfProjectiles = Caliberdatabase[(int)weaponSO.caliber].numberOfProjectiles,
+                    calculatedWeaponDamage = helper.CalculatedBaseWeaponDamage(weaponSO, caliberEntry.baseDamage),
+                    numberOfProjectiles = caliberEntry.numberOfProjectiles,
                     roundsPerMinute = weaponSO.rpm,
                     spread = weaponSO.Spread,
                     recoil = helper.GetCaliberRecoil(weaponSO.kickPower),

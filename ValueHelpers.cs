@@ -24,8 +24,8 @@ class ValueHelpers
         return recoil;
     }
 
-    public float CalculatedBaseWeaponDamage(WeaponSO weaponSO, CaliberType[] Caliberdatabase)
+    public float CalculatedBaseWeaponDamage(WeaponSO weaponSO, float caliberDamage)
     {
-        return weaponSO.damageMultiplier * WeaponTypeDataExt.GetDamageMultiplier(weaponSO.weaponType) * Caliberdatabase[(int)weaponSO.caliber].baseDamage;
+        return weaponSO.damageMultiplier * WeaponTypeDataExt.GetDamageMultiplier(weaponSO.weaponType) * caliberDamage;
     }
 }
