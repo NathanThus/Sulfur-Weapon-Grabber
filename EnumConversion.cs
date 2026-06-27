@@ -20,7 +20,7 @@ public static class EnumConversion
     public static string WeaponClassToString(WeaponTypes type) => type switch
     {
         WeaponTypes.None => "None",
-        WeaponTypes.AssaultRifle => "AssaultRifle",
+        WeaponTypes.AssaultRifle => "Assault Rifle",
         WeaponTypes.Bow => "Bow",
         WeaponTypes.LMG => "LMG",
         WeaponTypes.Melee => "Melee",
