@@ -26,4 +26,23 @@ class DatabaseGrabber
 
         return Caliberdatabase;
     }
+
+    public ref CaliberType GetCaliberEntry(WeaponSO weaponSO)
+    {
+        if (weaponSO == null)
+        {
+            throw new ArgumentNullException(nameof(weaponSO));
+        }
+
+        var caliberDatabase = GetCaliberDatabase();
+        var index = (int)weaponSO.caliber;
+
+        if (index < 0 || index >= caliberDatabase.Length)
+        {
+            throw new IndexOutOfRangeException($"Caliber index {index} is out of range.");
+        }
+
+        return ref caliberDatabase[index];
+    }
+
 }

@@ -18,7 +18,9 @@ public class WeaponDTO
     public float ammoMax;
     public float ammoPershot;
     public float bulletSpeed;
-    public float recoil;
     public float weight;
     public float loudness;
+    public float calculatedWeaponDamage;
+    public string baseCaliber;
+    public Dictionary<string, float> recoil;
 }
