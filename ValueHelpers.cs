@@ -28,4 +28,32 @@ class ValueHelpers
     {
         return weaponSO.damageMultiplier * WeaponTypeDataExt.GetDamageMultiplier(weaponSO.weaponType) * caliberDamage;
     }
+
+    public Dictionary<string, float> GetCaliberSpread(List<SpreadOverrideDefinition> spreadPerCaliber)
+    {
+        Dictionary<string, float> spread = [];
+        foreach (var spr in spreadPerCaliber)
+        {
+            spread.Add(EnumConversion.CaliberTypeToString(spr.Caliber), spr.Spread);
+        }
+        return spread;
+    }
+
+    public List<string> GetCompatibleAttachments(List<ItemDefinition> compatibleAttachments)
+    {
+        List<string> attachments = [];
+        foreach (var att in compatibleAttachments)
+        {
+            attachments.Add(att.displayName);
+        }
+        return attachments;
+    }
+
+    public class PRWrapper : Holdable
+    {
+        public StatModifier ExposeWeightClassConversion(HoldableWeightClass holdableWeightClass)
+        {
+            return GetRunSpeedModifier();
+        }
+    }
 }
