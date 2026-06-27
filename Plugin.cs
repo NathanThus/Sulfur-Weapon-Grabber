@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using BepInEx;
 using BepInEx.Logging;
+using Mono.Cecil.Cil;
 using Newtonsoft.Json;
 using PerfectRandom.Sulfur.Core;
 using PerfectRandom.Sulfur.Core.CharacterStats;
@@ -22,6 +23,7 @@ public class Plugin : BaseUnityPlugin
     List<ItemDefinition> weaponDatabase;
     DatabaseGrabber grabber = new();
     ValueHelpers helper = new();
+    ValueHelpers.PRWrapper protectedHelpers = new();
 
     private IEnumerator Start()
     {
@@ -45,18 +47,25 @@ public class Plugin : BaseUnityPlugin
             {
                 var weaponSO = itemDef as WeaponSO;
                 var caliberEntry = grabber.GetCaliberEntry(weaponSO);
+
                 weaponList.Add(new WeaponDTO
                 {
-                    name = weaponSO.displayName,
+                    name = weaponSO.name,
+                    displayName = weaponSO.displayName,
                     baseCaliber = EnumConversion.CaliberTypeToString(weaponSO.caliber),
-                    caliberDamage = caliberEntry.baseDamage,
+                    baseCaliberDamagePerProjectile = caliberEntry.baseDamage,
                     innateDamageMultiplier = weaponSO.damageMultiplier,
                     weaponTypeMultiplier = WeaponTypeDataExt.GetDamageMultiplier(weaponSO.weaponType),
-                    calculatedWeaponDamage = helper.CalculatedBaseWeaponDamage(weaponSO, caliberEntry.baseDamage),
+                    calculatedWeaponDamagePerProjectile = helper.CalculatedBaseWeaponDamage(weaponSO, caliberEntry.baseDamage),
                     numberOfProjectiles = caliberEntry.numberOfProjectiles,
                     roundsPerMinute = weaponSO.rpm,
-                    spread = weaponSO.Spread,
+                    spread = helper.GetCaliberSpread(weaponSO.spreadPerCaliber),
                     recoil = helper.GetCaliberRecoil(weaponSO.kickPower),
+                    ammoMax = weaponSO.iAmmoMax,
+                    ammoPerShot = weaponSO.iMaxAmmoPerShot,
+                    bulletSpeed = weaponSO.bulletSpeed,
+                    weightClass = weaponSO.weightClass,
+                    //weaponWeight = protectedHelpers.ExposeWeightClassConversion(weaponSO.
                 });
             }
         }
