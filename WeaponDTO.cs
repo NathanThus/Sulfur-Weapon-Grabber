@@ -14,8 +14,8 @@ public class WeaponDTO
     public string baseCaliber;
     public float innateDamageMultiplier;
     public float weaponTypeMultiplier;
-    public float baseCaliberDamagePerProjectile;
-    public float calculatedWeaponDamagePerProjectile;
+    public float baseCaliberDmgPerProj;
+    public float calculatedWeapDmgPerProj;
     public float numberOfProjectiles;
     public float magazineSize;
     public float roundsPerMinute;
