@@ -43,6 +43,10 @@ public class Plugin : BaseUnityPlugin
             {
                 continue;
             }
+            if (itemDef?.deprecated == true)
+            {
+                continue;
+            }
             if (itemDef is WeaponSO)
             {
                 var weaponSO = itemDef as WeaponSO;
@@ -61,11 +65,17 @@ public class Plugin : BaseUnityPlugin
                     roundsPerMinute = weaponSO.rpm,
                     spread = helper.GetCaliberSpread(weaponSO.spreadPerCaliber),
                     recoil = helper.GetCaliberRecoil(weaponSO.kickPower),
-                    ammoMax = weaponSO.iAmmoMax,
+                    magazineSize = weaponSO.iAmmoMax,
                     ammoPerShot = weaponSO.iMaxAmmoPerShot,
                     bulletSpeed = weaponSO.bulletSpeed,
                     weightClass = weaponSO.weightClass,
                     //weaponWeight = protectedHelpers.ExposeWeightClassConversion(weaponSO.
+                    shotsToReachFullSpread = weaponSO.shotsToReachFullSpread,
+                    timeToCooldownSpread = weaponSO.timeToCooldownSpread,
+                    damageType = EnumConversion.DamageTypeToString(weaponSO.damageType),
+                    projectileType = EnumConversion.ProjectileTypeToString(weaponSO.projectileType),
+                    weaponType = EnumConversion.WeaponClassToString(weaponSO.weaponType),
+
                 });
             }
         }
