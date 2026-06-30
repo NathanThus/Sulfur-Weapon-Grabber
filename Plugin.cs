@@ -35,7 +35,7 @@ public class Plugin : BaseUnityPlugin
         weaponDatabase = grabber.GetListOfItemDefinitions();
         Caliberdatabase = grabber.GetCaliberDatabase();
 
-        List<WeaponDTO> weaponList = [];
+        List<BaseDTO> weaponList = [];
 
         foreach (var itemDef in weaponDatabase)
         {
@@ -43,7 +43,7 @@ public class Plugin : BaseUnityPlugin
             {
                 continue;
             }
-            
+
             if (itemDef is WeaponSO)
             {
                 var weaponSO = itemDef as WeaponSO;
@@ -76,7 +76,13 @@ public class Plugin : BaseUnityPlugin
             }
         }
 
-        string json = JsonConvert.SerializeObject(weaponList, Formatting.Indented);
+        var settings = new JsonSerializerSettings
+        {
+            ContractResolver = new CustomContractResolver(),
+            Formatting = Formatting.Indented
+        };
+
+        string json = JsonConvert.SerializeObject(weaponList, settings);
 
         string path = Path.Combine(Paths.GameRootPath, nameof(weaponList) + ".json");
         File.WriteAllText(path, json);
