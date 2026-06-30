@@ -39,7 +39,7 @@ public class Plugin : BaseUnityPlugin
 
         foreach (var itemDef in weaponDatabase)
         {
-            if (itemDef?.slotType != SlotType.Weapon & itemDef?.slotType != SlotType.BasicMelee) continue;
+            if (itemDef?.slotType != SlotType.Weapon & itemDef?.slotType != SlotType.BasicMelee  & itemDef?.slotType != SlotType.Gadget) continue;
 
             if (itemDef is not WeaponSO) continue;
 
