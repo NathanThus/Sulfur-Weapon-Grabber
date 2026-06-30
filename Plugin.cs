@@ -33,7 +33,7 @@ public class Plugin : BaseUnityPlugin
         }
 
         weaponDatabase = grabber.GetListOfItemDefinitions();
-        Caliberdatabase = grabber.GetCaliberDatabase();
+        Caliberdatabase = DatabaseGrabber.GetCaliberDatabase();
 
         List<BaseDTO> weaponList = [];
 
@@ -43,10 +43,12 @@ public class Plugin : BaseUnityPlugin
 
             if (itemDef is not WeaponSO) continue;
 
-                var weaponSO = itemDef as WeaponSO;
-                BaseDTO returnDTO = GetRelevantDTO(weaponSO);
-                if (returnDTO == null) continue;
-                weaponList.Add(returnDTO);
+            var weaponSO = itemDef as WeaponSO;
+            BaseDTO returnDTO = GetRelevantDTO(weaponSO);
+
+            if (returnDTO == null) continue;
+
+            weaponList.Add(returnDTO);
         }
 
         var settings = new JsonSerializerSettings
@@ -66,65 +68,15 @@ public class Plugin : BaseUnityPlugin
         switch (weaponSO?.weaponType)
         {
             case WeaponTypes.Throwable:
-                return null;
+                return ThrowableDTO.CreateThrowableDTO(weaponSO);
             case WeaponTypes.Melee:
-                return CreateMeleeDTO(weaponSO);
+                return MeleeDTO.CreateMeleeDTO(weaponSO);
             case null:
                 return null;
             case WeaponTypes.End:
                 return null;
             default: // This covers all guns.
-                return CreateWeaponDTO(weaponSO);
+                return WeaponDTO.CreateWeaponDTO(weaponSO, helper);
         }
-    }
-
-    public WeaponDTO CreateWeaponDTO(WeaponSO weaponSO)
-    {
-        var caliberEntry = grabber.GetCaliberEntry(weaponSO);
-
-        return new WeaponDTO
-        {
-            name = weaponSO.name,
-            displayName = weaponSO.displayName,
-            baseCaliber = EnumConversion.CaliberTypeToString(weaponSO.caliber),
-            baseCaliberDmgPerProj = caliberEntry.baseDamage,
-            innateDamageMultiplier = weaponSO.damageMultiplier,
-            weaponTypeMultiplier = WeaponTypeDataExt.GetDamageMultiplier(weaponSO.weaponType),
-            calculatedWeapDmgPerProj = helper.CalculatedBaseWeaponDamage(weaponSO, caliberEntry.baseDamage),
-            numberOfProjectiles = caliberEntry.numberOfProjectiles,
-            roundsPerMinute = weaponSO.rpm,
-            spread = helper.GetCaliberSpread(weaponSO.spreadPerCaliber),
-            recoil = helper.GetCaliberRecoil(weaponSO.kickPower),
-            magazineSize = weaponSO.iAmmoMax,
-            ammoPerShot = weaponSO.iMaxAmmoPerShot,
-            bulletSpeed = weaponSO.bulletSpeed,
-            weightClass = weaponSO.weightClass,
-            //weaponWeight = protectedHelpers.ExposeWeightClassConversion(weaponSO.
-            shotsToReachFullSpread = weaponSO.shotsToReachFullSpread,
-            timeToCooldownSpread = weaponSO.timeToCooldownSpread,
-            damageType = EnumConversion.DamageTypeToString(weaponSO.damageType),
-            projectileType = EnumConversion.ProjectileTypeToString(weaponSO.projectileType),
-            weaponType = EnumConversion.WeaponClassToString(weaponSO.weaponType),
-        };
-    }
-
-    public MeleeDTO CreateMeleeDTO(WeaponSO weaponSO)
-    {
-        return new MeleeDTO
-        {
-            name = weaponSO.name,
-            displayName = weaponSO.displayName,
-            weaponType = EnumConversion.WeaponClassToString(weaponSO.weaponType)
-        };
-    }
-
-    public ThrowableDTO CreateThrowableDTO(WeaponSO weaponSO)
-    {
-        return new ThrowableDTO
-        {
-            name = weaponSO.name,
-            displayName = weaponSO.displayName,
-            weaponType = EnumConversion.WeaponClassToString(weaponSO.weaponType)
-        };
     }
 }
