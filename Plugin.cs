@@ -39,18 +39,14 @@ public class Plugin : BaseUnityPlugin
 
         foreach (var itemDef in weaponDatabase)
         {
-            if (itemDef?.HasRank != true)
-            {
-                continue;
-            }
+            if (itemDef?.slotType != SlotType.Weapon & itemDef?.slotType != SlotType.BasicMelee) continue;
 
-            if (itemDef is WeaponSO)
-            {
+            if (itemDef is not WeaponSO) continue;
+
                 var weaponSO = itemDef as WeaponSO;
                 BaseDTO returnDTO = GetRelevantDTO(weaponSO);
                 if (returnDTO == null) continue;
                 weaponList.Add(returnDTO);
-            }
         }
 
         var settings = new JsonSerializerSettings
