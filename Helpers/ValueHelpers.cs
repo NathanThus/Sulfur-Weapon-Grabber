@@ -12,7 +12,7 @@ using PerfectRandom.Sulfur.Core.Items;
 using PerfectRandom.Sulfur.Core.Weapons;
 using UnityEngine;
 
-class ValueHelpers
+public class ValueHelpers
 {
     public Dictionary<string, float> GetCaliberRecoil(List<CaliberKickDefinition> kickPowerList)
     {

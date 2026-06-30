@@ -33,52 +33,50 @@ public class Plugin : BaseUnityPlugin
         }
 
         weaponDatabase = grabber.GetListOfItemDefinitions();
-        Caliberdatabase = grabber.GetCaliberDatabase();
+        Caliberdatabase = DatabaseGrabber.GetCaliberDatabase();
 
-        List<WeaponDTO> weaponList = [];
+        List<BaseDTO> weaponList = [];
 
         foreach (var itemDef in weaponDatabase)
         {
-            if (itemDef?.HasRank != true)
-            {
-                continue;
-            }
-            
-            if (itemDef is WeaponSO)
-            {
-                var weaponSO = itemDef as WeaponSO;
-                var caliberEntry = grabber.GetCaliberEntry(weaponSO);
+            if (itemDef?.slotType != SlotType.Weapon & itemDef?.slotType != SlotType.BasicMelee  & itemDef?.slotType != SlotType.Gadget) continue;
 
-                weaponList.Add(new WeaponDTO
-                {
-                    name = weaponSO.name,
-                    displayName = weaponSO.displayName,
-                    baseCaliber = EnumConversion.CaliberTypeToString(weaponSO.caliber),
-                    baseCaliberDmgPerProj = caliberEntry.baseDamage,
-                    innateDamageMultiplier = weaponSO.damageMultiplier,
-                    weaponTypeMultiplier = WeaponTypeDataExt.GetDamageMultiplier(weaponSO.weaponType),
-                    calculatedWeapDmgPerProj = helper.CalculatedBaseWeaponDamage(weaponSO, caliberEntry.baseDamage),
-                    numberOfProjectiles = caliberEntry.numberOfProjectiles,
-                    roundsPerMinute = weaponSO.rpm,
-                    spread = helper.GetCaliberSpread(weaponSO.spreadPerCaliber),
-                    recoil = helper.GetCaliberRecoil(weaponSO.kickPower),
-                    magazineSize = weaponSO.iAmmoMax,
-                    ammoPerShot = weaponSO.iMaxAmmoPerShot,
-                    bulletSpeed = weaponSO.bulletSpeed,
-                    weightClass = weaponSO.weightClass,
-                    //weaponWeight = protectedHelpers.ExposeWeightClassConversion(weaponSO.
-                    shotsToReachFullSpread = weaponSO.shotsToReachFullSpread,
-                    timeToCooldownSpread = weaponSO.timeToCooldownSpread,
-                    damageType = EnumConversion.DamageTypeToString(weaponSO.damageType),
-                    projectileType = EnumConversion.ProjectileTypeToString(weaponSO.projectileType),
-                    weaponType = EnumConversion.WeaponClassToString(weaponSO.weaponType),
-                });
-            }
+            if (itemDef is not WeaponSO) continue;
+
+            var weaponSO = itemDef as WeaponSO;
+            BaseDTO returnDTO = GetRelevantDTO(weaponSO);
+
+            if (returnDTO == null) continue;
+
+            weaponList.Add(returnDTO);
         }
 
-        string json = JsonConvert.SerializeObject(weaponList, Formatting.Indented);
+        var settings = new JsonSerializerSettings
+        {
+            ContractResolver = new CustomContractResolver(),
+            Formatting = Formatting.Indented
+        };
+
+        string json = JsonConvert.SerializeObject(weaponList, settings);
 
         string path = Path.Combine(Paths.GameRootPath, nameof(weaponList) + ".json");
         File.WriteAllText(path, json);
+    }
+
+    private BaseDTO GetRelevantDTO(WeaponSO weaponSO)
+    {
+        switch (weaponSO?.weaponType)
+        {
+            case WeaponTypes.Throwable:
+                return ThrowableDTO.CreateThrowableDTO(weaponSO);
+            case WeaponTypes.Melee:
+                return MeleeDTO.CreateMeleeDTO(weaponSO);
+            case null:
+                return null;
+            case WeaponTypes.End:
+                return null;
+            default: // This covers all guns.
+                return WeaponDTO.CreateWeaponDTO(weaponSO, helper);
+        }
     }
 }

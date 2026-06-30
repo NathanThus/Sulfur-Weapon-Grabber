@@ -35,7 +35,7 @@ public static class EnumConversion
         _ => "Unknown",
     };
 
-    public static string CaliberTypeToString(CaliberTypes type) => type switch
+    public static string CaliberTypeToString(CaliberTypes? type) => type switch
     {
         CaliberTypes.None => "None",
         CaliberTypes._9mm => "9mm",
@@ -47,6 +47,7 @@ public static class EnumConversion
         CaliberTypes.Laser => "Energy Cell",
         CaliberTypes.Shrapnel => "Shrapnel",
         CaliberTypes.End => "End",
+        null => "Unknown",
         _ => "Unknown"
     };
 

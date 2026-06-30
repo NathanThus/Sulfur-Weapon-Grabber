@@ -16,7 +16,7 @@ class DatabaseGrabber
         return weaponDatabase;
     }
 
-    public CaliberType[] GetCaliberDatabase()
+    public static CaliberType[] GetCaliberDatabase()
     {
         var Caliberdatabase = StaticInstance<AsyncAssetLoading>.Instance.assetSets.caliberTypes;
         if (Caliberdatabase == null)
@@ -27,7 +27,7 @@ class DatabaseGrabber
         return Caliberdatabase;
     }
 
-    public ref CaliberType GetCaliberEntry(WeaponSO weaponSO)
+    public static CaliberType GetCaliberEntry(WeaponSO weaponSO)
     {
         if (weaponSO == null)
         {
@@ -42,7 +42,7 @@ class DatabaseGrabber
             throw new IndexOutOfRangeException($"Caliber index {index} is out of range.");
         }
 
-        return ref caliberDatabase[index];
+        return caliberDatabase[index];
     }
 
 }
