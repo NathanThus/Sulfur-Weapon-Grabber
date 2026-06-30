@@ -47,32 +47,9 @@ public class Plugin : BaseUnityPlugin
             if (itemDef is WeaponSO)
             {
                 var weaponSO = itemDef as WeaponSO;
-                var caliberEntry = grabber.GetCaliberEntry(weaponSO);
-
-                weaponList.Add(new WeaponDTO
-                {
-                    name = weaponSO.name,
-                    displayName = weaponSO.displayName,
-                    baseCaliber = EnumConversion.CaliberTypeToString(weaponSO.caliber),
-                    baseCaliberDmgPerProj = caliberEntry.baseDamage,
-                    innateDamageMultiplier = weaponSO.damageMultiplier,
-                    weaponTypeMultiplier = WeaponTypeDataExt.GetDamageMultiplier(weaponSO.weaponType),
-                    calculatedWeapDmgPerProj = helper.CalculatedBaseWeaponDamage(weaponSO, caliberEntry.baseDamage),
-                    numberOfProjectiles = caliberEntry.numberOfProjectiles,
-                    roundsPerMinute = weaponSO.rpm,
-                    spread = helper.GetCaliberSpread(weaponSO.spreadPerCaliber),
-                    recoil = helper.GetCaliberRecoil(weaponSO.kickPower),
-                    magazineSize = weaponSO.iAmmoMax,
-                    ammoPerShot = weaponSO.iMaxAmmoPerShot,
-                    bulletSpeed = weaponSO.bulletSpeed,
-                    weightClass = weaponSO.weightClass,
-                    //weaponWeight = protectedHelpers.ExposeWeightClassConversion(weaponSO.
-                    shotsToReachFullSpread = weaponSO.shotsToReachFullSpread,
-                    timeToCooldownSpread = weaponSO.timeToCooldownSpread,
-                    damageType = EnumConversion.DamageTypeToString(weaponSO.damageType),
-                    projectileType = EnumConversion.ProjectileTypeToString(weaponSO.projectileType),
-                    weaponType = EnumConversion.WeaponClassToString(weaponSO.weaponType),
-                });
+                BaseDTO returnDTO = GetRelevantDTO(weaponSO);
+                if (returnDTO == null) continue;
+                weaponList.Add(returnDTO);
             }
         }
 
@@ -86,5 +63,72 @@ public class Plugin : BaseUnityPlugin
 
         string path = Path.Combine(Paths.GameRootPath, nameof(weaponList) + ".json");
         File.WriteAllText(path, json);
+    }
+
+    private BaseDTO GetRelevantDTO(WeaponSO weaponSO)
+    {
+        switch (weaponSO?.weaponType)
+        {
+            case WeaponTypes.Throwable:
+                return null;
+            case WeaponTypes.Melee:
+                return CreateMeleeDTO(weaponSO);
+            case null:
+                return null;
+            case WeaponTypes.End:
+                return null;
+            default: // This covers all guns.
+                return CreateWeaponDTO(weaponSO);
+        }
+    }
+
+    public WeaponDTO CreateWeaponDTO(WeaponSO weaponSO)
+    {
+        var caliberEntry = grabber.GetCaliberEntry(weaponSO);
+
+        return new WeaponDTO
+        {
+            name = weaponSO.name,
+            displayName = weaponSO.displayName,
+            baseCaliber = EnumConversion.CaliberTypeToString(weaponSO.caliber),
+            baseCaliberDmgPerProj = caliberEntry.baseDamage,
+            innateDamageMultiplier = weaponSO.damageMultiplier,
+            weaponTypeMultiplier = WeaponTypeDataExt.GetDamageMultiplier(weaponSO.weaponType),
+            calculatedWeapDmgPerProj = helper.CalculatedBaseWeaponDamage(weaponSO, caliberEntry.baseDamage),
+            numberOfProjectiles = caliberEntry.numberOfProjectiles,
+            roundsPerMinute = weaponSO.rpm,
+            spread = helper.GetCaliberSpread(weaponSO.spreadPerCaliber),
+            recoil = helper.GetCaliberRecoil(weaponSO.kickPower),
+            magazineSize = weaponSO.iAmmoMax,
+            ammoPerShot = weaponSO.iMaxAmmoPerShot,
+            bulletSpeed = weaponSO.bulletSpeed,
+            weightClass = weaponSO.weightClass,
+            //weaponWeight = protectedHelpers.ExposeWeightClassConversion(weaponSO.
+            shotsToReachFullSpread = weaponSO.shotsToReachFullSpread,
+            timeToCooldownSpread = weaponSO.timeToCooldownSpread,
+            damageType = EnumConversion.DamageTypeToString(weaponSO.damageType),
+            projectileType = EnumConversion.ProjectileTypeToString(weaponSO.projectileType),
+            weaponType = EnumConversion.WeaponClassToString(weaponSO.weaponType),
+        };
+    }
+
+    public MeleeDTO CreateMeleeDTO(WeaponSO weaponSO)
+    {
+        return new MeleeDTO
+        {
+            name = weaponSO.name,
+            displayName = weaponSO.displayName,
+            weaponType = EnumConversion.WeaponClassToString(weaponSO.weaponType)
+        };
+    }
+
+    public ThrowableDTO CreateThrowableDTO(WeaponSO weaponSO)
+    {
+        return new ThrowableDTO
+        {
+            name = weaponSO.name,
+            displayName = weaponSO.displayName,
+            weaponType = EnumConversion.WeaponClassToString(weaponSO.weaponType)
+        };
     }
 }
