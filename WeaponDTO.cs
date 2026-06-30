@@ -6,11 +6,8 @@ using PerfectRandom.Sulfur.Core.Stats;
 using PerfectRandom.Sulfur.Core.Weapons;
 
 [Serializable]
-public class WeaponDTO
+public class WeaponDTO : BaseDTO
 {
-    public string name;
-    public string displayName;
-    public string weaponType;
     public string baseCaliber;
     public float innateDamageMultiplier;
     public float weaponTypeMultiplier;
