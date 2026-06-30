@@ -1,6 +1,6 @@
 using System;
 
 [Serializable]
-public class ThrowableDTO
+public class ThrowableDTO : BaseDTO
 {
 }
