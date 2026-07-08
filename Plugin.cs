@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Linq;
 using BepInEx;
 using BepInEx.Logging;
@@ -12,19 +13,70 @@ using PerfectRandom.Sulfur.Core.CharacterStats;
 using PerfectRandom.Sulfur.Core.Items;
 using PerfectRandom.Sulfur.Core.Weapons;
 using UnityEngine;
+using PerfectRandom.Sulfur.Core.Units;
+using I2.Loc;
+using HarmonyLib;
+using PerfectRandom.Sulfur.Core.Stats;
 
 namespace WeaponDataGrabber;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class Plugin : BaseUnityPlugin
 {
+    
     internal static new ManualLogSource Logger;
     CaliberType[] Caliberdatabase;
     List<ItemDefinition> weaponDatabase;
     DatabaseGrabber grabber = new();
     ValueHelpers helper = new();
     ValueHelpers.PRWrapper protectedHelpers = new();
+    ValueHelpers.PRWrapperWeapon protectedHelpers2 = new();
 
+    private void Awake()
+    {
+        var harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
+        harmony.PatchAll(); 
+        Debug.Log("Weapon Stats Grabber Loaded and Patches Applied!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    }
+
+    //[HarmonyPatch(typeof(ItemStats), "SetBaseAttributes")]
+    //[HarmonyPatch([typeof(ItemDefinition)])]
+    [HarmonyPatch(typeof(Weapon), "Initialize")]
+    public class WeaponStatsInterceptor
+    {
+        static void Postfix(object __instance)
+        {
+            Debug.Log("[Mod] Postfix !!!!!!!!!!!!!!!!!!!!!!!!!!! found an item!");
+            if (__instance == null) return;
+            System.Type instanceType = __instance.GetType();
+            FieldInfo[] fields = instanceType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            foreach (var field in fields)
+            {
+                Debug.Log($"[Mod] Found Field: {field.Name} = {field.GetValue(__instance)}");
+                /*object fieldValue = field.GetValue(__instance);
+                if (fieldValue is PerfectRandom.Sulfur.Core.CharacterStats.CharacterStat[] statArray) {
+                    foreach (var characterStat in statArray)
+                    {
+                        if (characterStat != null)
+                        {
+                            try 
+                            {
+                                Debug.Log($"[Mod] Found Character Stat Field: {characterStat.BaseValue}");
+                            }
+                            catch (System.Exception ex)
+                            {
+                                Debug.LogError($"[Mod] Error reading value: {ex.Message}");
+                            }
+                        }
+                        else 
+                        {
+                        }
+                    }
+                }*/
+            }
+        }
+    }
+    
     private IEnumerator Start()
     {
         while (!StaticInstance<AsyncAssetLoading>.Instance.loadingDone)
@@ -49,6 +101,10 @@ public class Plugin : BaseUnityPlugin
             if (returnDTO == null) continue;
 
             weaponList.Add(returnDTO);
+
+            /*var InstancedDTO = InstantiatedWeaponDTO.CreateInstantiatedWeaponDTO(weaponComp);
+            weaponList.Add(InstancedDTO);
+            Destroy(weaponInstance);*/
         }
 
         var settings = new JsonSerializerSettings

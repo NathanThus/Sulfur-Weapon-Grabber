@@ -56,4 +56,12 @@ public class ValueHelpers
             return GetRunSpeedModifier();
         }
     }
+
+    public class PRWrapperWeapon : Weapon
+    {
+        public void SetupWeaponStats(PRWrapperWeapon weapon)
+        {
+            weapon.SetupStats();
+        }
+    }
 }

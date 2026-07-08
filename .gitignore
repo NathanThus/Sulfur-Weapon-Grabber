@@ -70,3 +70,6 @@ x86/
 # Publish Web Output
 *.[Pp]ublish.xml
 lib
+
+# Build & Copy script
+buildAndCopy.ps1
