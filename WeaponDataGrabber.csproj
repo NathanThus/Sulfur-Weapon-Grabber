@@ -24,11 +24,16 @@
   </ItemGroup>
 
   <ItemGroup>
-  <Reference Include="PerfectRandom.Sulfur.Core">
-    <HintPath>lib\PerfectRandom.Sulfur.Core.dll</HintPath>
-  </Reference>
-</ItemGroup>
+    <Reference Include="PerfectRandom.Sulfur.Core">
+      <HintPath>lib\PerfectRandom.Sulfur.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="I2.Loc">
+      <HintPath>lib\I2AsmDef.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
