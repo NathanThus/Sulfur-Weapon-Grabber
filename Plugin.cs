@@ -83,10 +83,6 @@ public class Plugin : BaseUnityPlugin
     
     private IEnumerator Start()
     {
-        while (!StaticInstance<AsyncAssetLoading>.Instance.loadingDone)
-        {
-            yield return null;
-        }
         while (!StaticInstance<AsyncAssetLoading>.Instance.loadingDone) yield return new WaitForEndOfFrame();
 
         while (GameManager.Instance == null) yield return new WaitForEndOfFrame();
@@ -94,8 +90,6 @@ public class Plugin : BaseUnityPlugin
 
         weaponDatabase = grabber.GetListOfItemDefinitions();
         Caliberdatabase = DatabaseGrabber.GetCaliberDatabase();
-
-        List<BaseDTO> weaponList = [];
 
         foreach (var itemDef in weaponDatabase)
         {
@@ -106,10 +100,11 @@ public class Plugin : BaseUnityPlugin
 
             var weaponSO = itemDef as WeaponSO;
             weaponList.Add(weaponSO);
+            // BaseDTO returnDTO = GetRelevantDTO(weaponSO);
 
-            if (returnDTO == null) continue;
+            // if (returnDTO == null) continue;
 
-            weaponList.Add(returnDTO);
+            // weaponList.Add(returnDTO);
 
             /*var InstancedDTO = InstantiatedWeaponDTO.CreateInstantiatedWeaponDTO(weaponComp);
             weaponList.Add(InstancedDTO);
@@ -122,68 +117,22 @@ public class Plugin : BaseUnityPlugin
     {
         if (weaponList.Count == 0) yield break;
 
-        while (!IsInLevel()) yield return new WaitForEndOfFrame();
+        while (!SpawnHelper.IsInLevel()) yield return new WaitForEndOfFrame();
 
-        RemoveGeneratedWeaponSafely(GetItemInWeaponSlot(InventorySlot.Weapon0), "Datamining :)");
+        SpawnHelper.RemoveGeneratedWeaponSafely(SpawnHelper.GetItemInWeaponSlot(InventorySlot.Weapon0), "Datamining :)");
 
-        SetupWeaponSpawning();
+        SpawnHelper.SetupWeaponSpawning();
         foreach (var weapon in weaponList)
         {
-            if(!IsWeaponSlotEmpty(ToInventorySlot(weapon.slotType)))
+            if(!SpawnHelper.IsWeaponSlotEmpty(SpawnHelper.ToInventorySlot(weapon.slotType)))
             {
-                RemoveGeneratedWeaponSafely(GetItemInWeaponSlot(ToInventorySlot(weapon.slotType)), "Datamining :)");
+                SpawnHelper.RemoveGeneratedWeaponSafely(SpawnHelper.GetItemInWeaponSlot(SpawnHelper.ToInventorySlot(weapon.slotType)), "Datamining :)");
             }
 
-            StaticInstance<UIManager>.Instance.InventoryUI.SpawnItemInSlot(weapon, ToInventorySlot(weapon.slotType), null);
+            StaticInstance<UIManager>.Instance.InventoryUI.SpawnItemInSlot(weapon, SpawnHelper.ToInventorySlot(weapon.slotType), null);
 
             yield return new WaitForSeconds(2);
         }
-    }
-
-    private InventoryItem GetItemInWeaponSlot(InventorySlot slot)
-    {
-        if (equipmentManager != null && equipmentManager.EquippedItems.ContainsKey(slot))
-        {
-            return equipmentManager.EquippedItems[slot];
-        }
-        return null;
-    }
-
-    private bool IsWeaponSlotEmpty(InventorySlot slot)
-    {
-        InventoryItem itemInWeaponSlot = GetItemInWeaponSlot(slot);
-        return itemInWeaponSlot == null;
-    }
-
-    private void RemoveGeneratedWeaponSafely(InventoryItem item, string reason)
-    {
-        if (item == null)
-        {
-            return;
-        }
-        try
-        {
-            item.GetRemovedByExternalFactor(reason);
-        }
-        catch (Exception ex)
-        {
-            Debug.LogWarning("Failed to remove generated weapon: " + ex.Message);
-        }
-    }
-
-    private InventorySlot ToInventorySlot(SlotType slotType) => slotType switch
-    {
-        SlotType.Gadget => InventorySlot.Gadget0,
-        SlotType.Weapon => InventorySlot.Weapon0,
-        SlotType.BasicMelee => InventorySlot.BasicMelee,
-        _ => throw new NotImplementedException(nameof(slotType))
-    };
-
-    private void SetupWeaponSpawning()
-    {
-        GameManager gameManager = StaticInstance<GameManager>.Instance;
-        if (gameManager == null) throw new NullReferenceException(nameof(gameManager));
-        equipmentManager = gameManager.EquipmentManager;
     }
 
     private static void SaveItems(List<ItemDefinition> weaponList)
@@ -217,44 +166,5 @@ public class Plugin : BaseUnityPlugin
         }
     }
 
-    private bool IsInLevel()
-    {
-        try
-        {
-            GameManager instance = StaticInstance<GameManager>.Instance;
-            if (instance == null)
-            {
-                return false;
-            }
-            if (instance.gameState != GameState.Running)
-            {
-                return false;
-            }
-            if (instance.PlayerUnit == null)
-            {
-                return false;
-            }
-            if (StaticInstance<UIManager>.Instance == null)
-            {
-                return false;
-            }
-            if (StaticInstance<UIManager>.Instance.PlayerBackpackGrid == null)
-            {
-                return false;
-            }
-            if (StaticInstance<UIManager>.Instance.InventoryUI == null)
-            {
-                return false;
-            }
-            if (instance.EquipmentManager == null)
-            {
-                return false;
-            }
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
+    
 }
