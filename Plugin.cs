@@ -115,7 +115,30 @@ public class Plugin : BaseUnityPlugin
             weaponList.Add(InstancedDTO);
             Destroy(weaponInstance);*/
         }
+        StartCoroutine(SpawnWeapons());
+    }
 
+    private IEnumerator SpawnWeapons()
+    {
+        if (weaponList.Count == 0) yield break;
+
+        while (!IsInLevel()) yield return new WaitForEndOfFrame();
+
+        RemoveGeneratedWeaponSafely(GetItemInWeaponSlot(InventorySlot.Weapon0), "Datamining :)");
+
+        SetupWeaponSpawning();
+        foreach (var weapon in weaponList)
+        {
+            if(!IsWeaponSlotEmpty(ToInventorySlot(weapon.slotType)))
+            {
+                RemoveGeneratedWeaponSafely(GetItemInWeaponSlot(ToInventorySlot(weapon.slotType)), "Datamining :)");
+            }
+
+            StaticInstance<UIManager>.Instance.InventoryUI.SpawnItemInSlot(weapon, ToInventorySlot(weapon.slotType), null);
+
+            yield return new WaitForSeconds(2);
+        }
+    }
 
     private InventoryItem GetItemInWeaponSlot(InventorySlot slot)
     {
