@@ -87,6 +87,10 @@ public class Plugin : BaseUnityPlugin
         {
             yield return null;
         }
+        while (!StaticInstance<AsyncAssetLoading>.Instance.loadingDone) yield return new WaitForEndOfFrame();
+
+        while (GameManager.Instance == null) yield return new WaitForEndOfFrame();
+        while (GameManager.Instance.awaitingStartLevel) yield return new WaitForEndOfFrame();
 
         weaponDatabase = grabber.GetListOfItemDefinitions();
         Caliberdatabase = DatabaseGrabber.GetCaliberDatabase();
