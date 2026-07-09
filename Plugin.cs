@@ -17,6 +17,8 @@ using PerfectRandom.Sulfur.Core.Units;
 using I2.Loc;
 using HarmonyLib;
 using PerfectRandom.Sulfur.Core.Stats;
+using PerfectRandom.Sulfur.Core.UI;
+using PerfectRandom.Sulfur.Core.UI.Inventory;
 
 namespace WeaponDataGrabber;
 
