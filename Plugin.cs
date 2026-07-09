@@ -116,6 +116,55 @@ public class Plugin : BaseUnityPlugin
             Destroy(weaponInstance);*/
         }
 
+
+    private InventoryItem GetItemInWeaponSlot(InventorySlot slot)
+    {
+        if (equipmentManager != null && equipmentManager.EquippedItems.ContainsKey(slot))
+        {
+            return equipmentManager.EquippedItems[slot];
+        }
+        return null;
+    }
+
+    private bool IsWeaponSlotEmpty(InventorySlot slot)
+    {
+        InventoryItem itemInWeaponSlot = GetItemInWeaponSlot(slot);
+        return itemInWeaponSlot == null;
+    }
+
+    private void RemoveGeneratedWeaponSafely(InventoryItem item, string reason)
+    {
+        if (item == null)
+        {
+            return;
+        }
+        try
+        {
+            item.GetRemovedByExternalFactor(reason);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning("Failed to remove generated weapon: " + ex.Message);
+        }
+    }
+
+    private InventorySlot ToInventorySlot(SlotType slotType) => slotType switch
+    {
+        SlotType.Gadget => InventorySlot.Gadget0,
+        SlotType.Weapon => InventorySlot.Weapon0,
+        SlotType.BasicMelee => InventorySlot.BasicMelee,
+        _ => throw new NotImplementedException(nameof(slotType))
+    };
+
+    private void SetupWeaponSpawning()
+    {
+        GameManager gameManager = StaticInstance<GameManager>.Instance;
+        if (gameManager == null) throw new NullReferenceException(nameof(gameManager));
+        equipmentManager = gameManager.EquipmentManager;
+    }
+
+    private static void SaveItems(List<ItemDefinition> weaponList)
+    {
         var settings = new JsonSerializerSettings
         {
             ContractResolver = new CustomContractResolver(),
@@ -142,6 +191,47 @@ public class Plugin : BaseUnityPlugin
                 return null;
             default: // This covers all guns.
                 return WeaponDTO.CreateWeaponDTO(weaponSO, helper);
+        }
+    }
+
+    private bool IsInLevel()
+    {
+        try
+        {
+            GameManager instance = StaticInstance<GameManager>.Instance;
+            if (instance == null)
+            {
+                return false;
+            }
+            if (instance.gameState != GameState.Running)
+            {
+                return false;
+            }
+            if (instance.PlayerUnit == null)
+            {
+                return false;
+            }
+            if (StaticInstance<UIManager>.Instance == null)
+            {
+                return false;
+            }
+            if (StaticInstance<UIManager>.Instance.PlayerBackpackGrid == null)
+            {
+                return false;
+            }
+            if (StaticInstance<UIManager>.Instance.InventoryUI == null)
+            {
+                return false;
+            }
+            if (instance.EquipmentManager == null)
+            {
+                return false;
+            }
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
 }
