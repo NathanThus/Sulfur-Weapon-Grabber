@@ -81,6 +81,7 @@ public class Plugin : BaseUnityPlugin
         }
     }
     
+
     private IEnumerator Start()
     {
         while (!StaticInstance<AsyncAssetLoading>.Instance.loadingDone) yield return new WaitForEndOfFrame();
@@ -124,12 +125,13 @@ public class Plugin : BaseUnityPlugin
         SpawnHelper.SetupWeaponSpawning();
         foreach (var weapon in weaponList)
         {
-            if(!SpawnHelper.IsWeaponSlotEmpty(SpawnHelper.ToInventorySlot(weapon.slotType)))
+            InventorySlot slot = SpawnHelper.ToInventorySlot(weapon.slotType);
+            if(!SpawnHelper.IsWeaponSlotEmpty(slot))
             {
-                SpawnHelper.RemoveGeneratedWeaponSafely(SpawnHelper.GetItemInWeaponSlot(SpawnHelper.ToInventorySlot(weapon.slotType)), "Datamining :)");
+                SpawnHelper.RemoveGeneratedWeaponSafely(SpawnHelper.GetItemInWeaponSlot(slot), "Datamining :)");
             }
 
-            StaticInstance<UIManager>.Instance.InventoryUI.SpawnItemInSlot(weapon, SpawnHelper.ToInventorySlot(weapon.slotType), null);
+            StaticInstance<UIManager>.Instance.InventoryUI.SpawnItemInSlot(weapon, slot, null);
 
             yield return new WaitForSeconds(2);
         }
