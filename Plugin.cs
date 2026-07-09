@@ -33,6 +33,8 @@ public class Plugin : BaseUnityPlugin
     ValueHelpers helper = new();
     ValueHelpers.PRWrapper protectedHelpers = new();
     ValueHelpers.PRWrapperWeapon protectedHelpers2 = new();
+    private List<ItemDefinition> weaponList = [];
+    private EquipmentManager equipmentManager;
 
     private void Awake()
     {
