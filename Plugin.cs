@@ -25,7 +25,6 @@ namespace WeaponDataGrabber;
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class Plugin : BaseUnityPlugin
 {
-    
     internal static new ManualLogSource Logger;
     CaliberType[] Caliberdatabase;
     List<ItemDefinition> weaponDatabase;
@@ -33,7 +32,8 @@ public class Plugin : BaseUnityPlugin
     ValueHelpers helper = new();
     ValueHelpers.PRWrapper protectedHelpers = new();
     ValueHelpers.PRWrapperWeapon protectedHelpers2 = new();
-    private List<ItemDefinition> weaponList = [];
+    private static List<ItemDefinition> weaponList = [];
+    private static List<BaseDTO> weaponPropertyList = [];
     private EquipmentManager equipmentManager;
 
     private void Awake()
@@ -52,11 +52,25 @@ public class Plugin : BaseUnityPlugin
         {
             Debug.Log("[Mod] Postfix !!!!!!!!!!!!!!!!!!!!!!!!!!! found an item!");
             if (__instance == null) return;
-            System.Type instanceType = __instance.GetType();
+            Weapon weapon = __instance as Weapon;
+            Debug.Log(weapon.weaponDefinition.weaponType);
+            if (weapon == null)
+            {
+                return;
+            }
+            BaseDTO returnDTO = GetRelevantDTO(weapon);
+
+            if (returnDTO == null) return;
+
+            weaponPropertyList.Add(returnDTO);
+
+            /*System.Type instanceType = __instance.GetType();
             FieldInfo[] fields = instanceType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
             foreach (var field in fields)
             {
-                Debug.Log($"[Mod] Found Field: {field.Name} = {field.GetValue(__instance)}");
+                Debug.Log($"[Mod] Found Field: {field.Name} = {field.GetValue(__instance)}");*/
+
+
                 /*object fieldValue = field.GetValue(__instance);
                 if (fieldValue is PerfectRandom.Sulfur.Core.CharacterStats.CharacterStat[] statArray) {
                     foreach (var characterStat in statArray)
@@ -77,7 +91,7 @@ public class Plugin : BaseUnityPlugin
                         }
                     }
                 }*/
-            }
+            //}
         }
     }
     
@@ -135,9 +149,10 @@ public class Plugin : BaseUnityPlugin
 
             yield return new WaitForSeconds(2);
         }
+        SaveItems(weaponPropertyList);
     }
 
-    private static void SaveItems(List<ItemDefinition> weaponList)
+    private static void SaveItems(List<BaseDTO> weaponPropertyList)
     {
         var settings = new JsonSerializerSettings
         {
@@ -145,28 +160,27 @@ public class Plugin : BaseUnityPlugin
             Formatting = Formatting.Indented
         };
 
-        string json = JsonConvert.SerializeObject(weaponList, settings);
+        string json = JsonConvert.SerializeObject(weaponPropertyList, settings);
 
-        string path = Path.Combine(Paths.GameRootPath, nameof(weaponList) + ".json");
+        string path = Path.Combine(Paths.GameRootPath, nameof(weaponPropertyList) + ".json");
         File.WriteAllText(path, json);
     }
 
-    private BaseDTO GetRelevantDTO(WeaponSO weaponSO)
+    private static BaseDTO GetRelevantDTO(Weapon weapon)
     {
-        switch (weaponSO?.weaponType)
+        var helper = new ValueHelpers();
+        switch (weapon?.weaponDefinition.weaponType)
         {
             case WeaponTypes.Throwable:
-                return ThrowableDTO.CreateThrowableDTO(weaponSO);
+                return ThrowableDTO.CreateThrowableDTO(weapon);
             case WeaponTypes.Melee:
-                return MeleeDTO.CreateMeleeDTO(weaponSO);
+                return MeleeDTO.CreateMeleeDTO(weapon);
             case null:
                 return null;
             case WeaponTypes.End:
                 return null;
             default: // This covers all guns.
-                return WeaponDTO.CreateWeaponDTO(weaponSO, helper);
+                return WeaponDTO.CreateWeaponDTO(weapon, helper);
         }
     }
-
-    
 }
