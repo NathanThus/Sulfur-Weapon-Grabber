@@ -1,16 +1,17 @@
 using System;
 using PerfectRandom.Sulfur.Core.Items;
+using PerfectRandom.Sulfur.Core.Weapons;
 
 [Serializable]
 public class ThrowableDTO : BaseDTO
 {
-    public static ThrowableDTO CreateThrowableDTO(WeaponSO weaponSO)
+    public static ThrowableDTO CreateThrowableDTO(Weapon weapon)
     {
         return new ThrowableDTO
         {
-            name = weaponSO.name,
-            displayName = weaponSO.displayName,
-            weaponType = EnumConversion.WeaponClassToString(weaponSO.weaponType)
+            name = weapon.name,
+            displayName = weapon.weaponDefinition.LocalizedDisplayName,
+            weaponType = EnumConversion.WeaponClassToString(weapon.weaponDefinition.weaponType)
         };
     }
 }

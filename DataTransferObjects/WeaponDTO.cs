@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using Mono.Cecil.Cil;
 using PerfectRandom.Sulfur.Core;
 using PerfectRandom.Sulfur.Core.CharacterStats;
 using PerfectRandom.Sulfur.Core.Items;
@@ -9,28 +11,13 @@ using PerfectRandom.Sulfur.Core.Weapons;
 [Serializable]
 public class WeaponDTO : BaseDTO
 {
-    public string baseCaliber;
-    public float innateDamageMultiplier;
-    public float weaponTypeMultiplier;
-    public float baseCaliberDmgPerProj;
-    public float calculatedWeapDmgPerProj;
-    public float numberOfProjectiles;
-    public float magazineSize;
-    public float roundsPerMinute;
-    public Dictionary<string, float> recoil;
-    public Dictionary<string, float> spread;
-    public float reloadTime;
-    public float ammoPerShot;
-    public float bulletSpeed;
-    public HoldableWeightClass weightClass;
+    public string Name;
+    public CoreDTO Core;
+    public Dictionary<string, float> Modifiable;
+    public ExtraDTO Extra;
     //public StatModifier weaponWeight;
-    public float loudness;
-    public int shotsToReachFullSpread;
-    public float timeToCooldownSpread;
-    public string damageType;
-    public string projectileType;
 
-    public static WeaponDTO CreateWeaponDTO(WeaponSO weaponSO, ValueHelpers helpers)
+    /*public static WeaponDTO CreateWeaponDTO(WeaponSO weaponSO, ValueHelpers helpers)
     {
         var caliberEntry = DatabaseGrabber.GetCaliberEntry(weaponSO);
 
@@ -47,16 +34,23 @@ public class WeaponDTO : BaseDTO
             roundsPerMinute = weaponSO.rpm,
             spread = helpers.GetCaliberSpread(weaponSO.spreadPerCaliber),
             recoil = helpers.GetCaliberRecoil(weaponSO.kickPower),
-            magazineSize = weaponSO.iAmmoMax,
-            ammoPerShot = weaponSO.iMaxAmmoPerShot,
-            bulletSpeed = weaponSO.bulletSpeed,
-            weightClass = weaponSO.weightClass,
             //weaponWeight = protectedHelpers.ExposeWeightClassConversion(weaponSO.
             shotsToReachFullSpread = weaponSO.shotsToReachFullSpread,
             timeToCooldownSpread = weaponSO.timeToCooldownSpread,
             damageType = EnumConversion.DamageTypeToString(weaponSO.damageType),
             projectileType = EnumConversion.ProjectileTypeToString(weaponSO.projectileType),
             weaponType = EnumConversion.WeaponClassToString(weaponSO.weaponType),
+        };
+    }*/
+    public static WeaponDTO CreateWeaponDTO(Weapon weapon, ValueHelpers helpers)
+    {
+        ModifiableHelper modifiableHelper = new();
+        return new WeaponDTO
+        {
+            Name = weapon.weaponDefinition.LocalizedDisplayName,
+            Core = CoreDTO.SetCoreWeaponStats(weapon, helpers),
+            Modifiable = modifiableHelper.GetModifiableStats(weapon),
+            Extra = ExtraDTO.SetExtraWeaponStats(weapon, helpers)
         };
     }
 }
