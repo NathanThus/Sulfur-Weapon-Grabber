@@ -51,7 +51,7 @@ public class ValueHelpers
 
     public class PRWrapper : Holdable
     {
-        public StatModifier ExposeWeightClassConversion(HoldableWeightClass holdableWeightClass)
+        public StatModifier ExposeWeightClassConversion(Holdable weapon)
         {
             return GetRunSpeedModifier();
         }
