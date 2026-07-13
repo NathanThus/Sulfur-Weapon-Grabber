@@ -9,7 +9,7 @@ public class ThrowableDTO : BaseDTO
     {
         return new ThrowableDTO
         {
-            name = weapon.name,
+            Name = weapon.name,
             displayName = weapon.weaponDefinition.LocalizedDisplayName,
             weaponType = EnumConversion.WeaponClassToString(weapon.weaponDefinition.weaponType)
         };

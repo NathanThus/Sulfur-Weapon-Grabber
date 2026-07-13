@@ -9,7 +9,7 @@ public class MeleeDTO : BaseDTO
     {
         return new MeleeDTO
         {
-            name = weapon.name,
+            Name = weapon.name,
             displayName = weapon.weaponDefinition.LocalizedDisplayName,
             weaponType = EnumConversion.WeaponClassToString(weapon.weaponDefinition.weaponType)
         };

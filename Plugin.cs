@@ -53,7 +53,6 @@ public class Plugin : BaseUnityPlugin
             Debug.Log("[Mod] Postfix !!!!!!!!!!!!!!!!!!!!!!!!!!! found an item!");
             if (__instance == null) return;
             Weapon weapon = __instance as Weapon;
-            Debug.Log(weapon.weaponDefinition.weaponType);
             if (weapon == null)
             {
                 return;
@@ -61,6 +60,14 @@ public class Plugin : BaseUnityPlugin
             BaseDTO returnDTO = GetRelevantDTO(weapon);
 
             if (returnDTO == null) return;
+
+            foreach (var wep in weaponPropertyList)
+            {
+                if (wep.Name == returnDTO.Name)
+                {
+                    return;
+                }
+            }
 
             weaponPropertyList.Add(returnDTO);
 
@@ -112,6 +119,7 @@ public class Plugin : BaseUnityPlugin
 
             if (itemDef is not WeaponSO) continue;
             if (itemDef.prefab == null) continue;
+            if (itemDef.showcasePrefab == null) continue;
 
             var weaponSO = itemDef as WeaponSO;
             weaponList.Add(weaponSO);
@@ -147,7 +155,7 @@ public class Plugin : BaseUnityPlugin
 
             StaticInstance<UIManager>.Instance.InventoryUI.SpawnItemInSlot(weapon, slot, null);
 
-            yield return new WaitForSeconds(2);
+            yield return null;
         }
         SaveItems(weaponPropertyList);
     }

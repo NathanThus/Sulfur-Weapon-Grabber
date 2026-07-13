@@ -23,6 +23,8 @@ public class CoreDTO : BaseDTO
     public HoldableWeightClass weightClass;
     public Dictionary<string, float> caliberSpread;
     public Dictionary<string, float> caliberRecoil;
+    public float computedSpread;
+    public float spreadStrength;
     
 
     public static CoreDTO SetCoreWeaponStats(Weapon weapon, ValueHelpers helpers)
@@ -40,6 +42,8 @@ public class CoreDTO : BaseDTO
             ammoPerShot = weapon.weaponDefinition.iMaxAmmoPerShot,
             caliberSpread = helpers.GetCaliberSpread(weapon.weaponDefinition.spreadPerCaliber),
             caliberRecoil = helpers.GetCaliberRecoil(weapon.weaponDefinition.kickPower),
+            computedSpread = weapon.computedSpread,
+            spreadStrength = weapon.SpreadStrength,
         };
     }     
 }
