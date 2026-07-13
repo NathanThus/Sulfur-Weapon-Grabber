@@ -11,7 +11,6 @@ using PerfectRandom.Sulfur.Core.Weapons;
 [Serializable]
 public class WeaponDTO : BaseDTO
 {
-    public string Name;
     public CoreDTO Core;
     public Dictionary<string, float> Modifiable;
     public ExtraDTO Extra;
