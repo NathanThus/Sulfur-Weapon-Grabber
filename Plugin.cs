@@ -33,7 +33,7 @@ public class Plugin : BaseUnityPlugin
     ValueHelpers.PRWrapper protectedHelpers = new();
     ValueHelpers.PRWrapperWeapon protectedHelpers2 = new();
     private static List<ItemDefinition> weaponList = [];
-    private static List<BaseDTO> weaponPropertyList = [];
+    private static CategoryDTO weaponPropertyList;
     private EquipmentManager equipmentManager;
 
     private void Awake()
@@ -61,15 +61,20 @@ public class Plugin : BaseUnityPlugin
 
             if (returnDTO == null) return;
 
-            foreach (var wep in weaponPropertyList)
+            if (weaponPropertyList.Guns[returnDTO.Name] != null)
             {
-                if (wep.Name == returnDTO.Name)
-                {
-                    return;
-                }
+                return;
+            }
+            if (weaponPropertyList.Throwable[returnDTO.Name] != null)
+            {
+                return;
+            }
+            if (weaponPropertyList.Melee[returnDTO.Name] != null)
+            {
+                return;
             }
 
-            weaponPropertyList.Add(returnDTO);
+            AddToCategoryDTO(returnDTO);
 
             /*System.Type instanceType = __instance.GetType();
             FieldInfo[] fields = instanceType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
@@ -160,7 +165,7 @@ public class Plugin : BaseUnityPlugin
         SaveItems(weaponPropertyList);
     }
 
-    private static void SaveItems(List<BaseDTO> weaponPropertyList)
+    private static void SaveItems(CategoryDTO weaponPropertyList)
     {
         var settings = new JsonSerializerSettings
         {
@@ -189,6 +194,26 @@ public class Plugin : BaseUnityPlugin
                 return null;
             default: // This covers all guns.
                 return WeaponDTO.CreateWeaponDTO(weapon, helper);
+        }
+    }
+
+    private static void AddToCategoryDTO(BaseDTO weapon)
+    {
+        switch (weapon?.weaponType)
+        {
+            case "Throwable":
+                weaponPropertyList.Throwable.Add(weapon.Name, weapon);
+                break;
+            case "Melee":
+                weaponPropertyList.Melee.Add(weapon.Name, weapon);
+                break;
+            case null:
+                break;
+            case "End":
+                break;
+            default: // This covers all guns.
+                weaponPropertyList.Guns.Add(weapon.Name, weapon);
+                break;
         }
     }
 }
