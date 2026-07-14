@@ -33,7 +33,7 @@ public class Plugin : BaseUnityPlugin
     ValueHelpers.PRWrapper protectedHelpers = new();
     ValueHelpers.PRWrapperWeapon protectedHelpers2 = new();
     private static List<ItemDefinition> weaponList = [];
-    private static CategoryDTO weaponPropertyList;
+    private static CategoryDTO weaponPropertyList = new();
     private EquipmentManager equipmentManager;
 
     private void Awake()
@@ -123,8 +123,8 @@ public class Plugin : BaseUnityPlugin
             if (itemDef?.slotType != SlotType.Weapon & itemDef?.slotType != SlotType.BasicMelee & itemDef?.slotType != SlotType.Gadget) continue;
 
             if (itemDef is not WeaponSO) continue;
-            if (itemDef.prefab == null) continue;
-            if (itemDef.showcasePrefab == null) continue;
+            if (itemDef?.prefab == null) continue;
+            if (itemDef?.showcasePrefab == null) continue;
 
             var weaponSO = itemDef as WeaponSO;
             weaponList.Add(weaponSO);
