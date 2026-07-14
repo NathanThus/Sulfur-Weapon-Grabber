@@ -14,7 +14,7 @@ using PerfectRandom.Sulfur.Core.Items;
 using PerfectRandom.Sulfur.Core.Weapons;
 using UnityEngine;
 using PerfectRandom.Sulfur.Core.Units;
-using I2.Loc;
+// using I2.Loc;
 using HarmonyLib;
 using PerfectRandom.Sulfur.Core.Stats;
 using PerfectRandom.Sulfur.Core.UI;
@@ -142,15 +142,20 @@ public class Plugin : BaseUnityPlugin
 
         while (!SpawnHelper.IsInLevel()) yield return new WaitForEndOfFrame();
 
-        SpawnHelper.RemoveGeneratedWeaponSafely(SpawnHelper.GetItemInWeaponSlot(InventorySlot.Weapon0), "Datamining :)");
+        ClearSlots();
 
         SpawnHelper.SetupWeaponSpawning();
+
         foreach (var weapon in weaponList)
         {
             InventorySlot slot = SpawnHelper.ToInventorySlot(weapon.slotType);
-            if(!SpawnHelper.IsWeaponSlotEmpty(slot))
+            if (!SpawnHelper.IsWeaponSlotEmpty(slot) & SpawnHelper.GetItemInWeaponSlot(slot)?.SlotType != SlotType.BasicMelee)
             {
-                SpawnHelper.RemoveGeneratedWeaponSafely(SpawnHelper.GetItemInWeaponSlot(slot), "Datamining :)");
+                SpawnHelper.GetItemInWeaponSlot(slot)?.DropFromPlayer();
+            }
+            else if (!SpawnHelper.IsWeaponSlotEmpty(slot) & SpawnHelper.GetItemInWeaponSlot(slot)?.SlotType == SlotType.BasicMelee)
+            {
+                SpawnHelper.RemoveGeneratedWeaponSafely(SpawnHelper.GetItemInWeaponSlot(slot), "Melee weapons don't drop safely");
             }
 
             StaticInstance<UIManager>.Instance.InventoryUI.SpawnItemInSlot(weapon, slot, null);
@@ -158,6 +163,13 @@ public class Plugin : BaseUnityPlugin
             yield return null;
         }
         SaveItems(weaponPropertyList);
+    }
+
+    private static void ClearSlots()
+    {
+        SpawnHelper.GetItemInWeaponSlot(InventorySlot.Weapon0)?.DropFromPlayer();
+        SpawnHelper.GetItemInWeaponSlot(InventorySlot.BasicMelee)?.DropFromPlayer();
+        SpawnHelper.GetItemInWeaponSlot(InventorySlot.Gadget0)?.DropFromPlayer();
     }
 
     private static void SaveItems(List<BaseDTO> weaponPropertyList)
