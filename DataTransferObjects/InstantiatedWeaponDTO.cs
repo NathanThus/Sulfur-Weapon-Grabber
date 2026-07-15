@@ -8,16 +8,13 @@ using PerfectRandom.Sulfur.Core.Weapons;
 using PerfectRandom.Sulfur.Core.UI;
 using PerfectRandom.Sulfur.Core.UI.Inventory;
 using UnityEngine;
-using I2.Loc;
+// using I2.Loc;
 
 [Serializable]
 public class InstantiatedWeaponDTO : BaseDTO
 {
     public string instanceName;
     public bool instanceEnabled;
-    public int priceBase;
-    public int priceBuy;
-    public int priceSell;
     public string caliber;
     public float bulletSpeed;
 
@@ -42,10 +39,7 @@ public class InstantiatedWeaponDTO : BaseDTO
         return new InstantiatedWeaponDTO
         {
             instanceName = weapon.SourceName,
-            //caliber = weapon.Caliber.ToString(),
-            priceBase = weapon.inventoryItem.PriceBase,
-            //priceBuy = weapon.inventoryItem.PriceBuy,
-            //priceSell = weapon.inventoryItem.PriceSell,
+            caliber = weapon.Caliber.ToString(),
             bulletSpeed = weapon.bulletSpeed
         };
     }
