@@ -29,12 +29,8 @@ public class Plugin : BaseUnityPlugin
     CaliberType[] Caliberdatabase;
     List<ItemDefinition> weaponDatabase;
     DatabaseGrabber grabber = new();
-    ValueHelpers helper = new();
-    ValueHelpers.PRWrapper protectedHelpers = new();
-    ValueHelpers.PRWrapperWeapon protectedHelpers2 = new();
     private static List<ItemDefinition> weaponList = [];
     private static List<BaseDTO> weaponPropertyList = [];
-    private EquipmentManager equipmentManager;
 
     private void Awake()
     {
@@ -43,8 +39,6 @@ public class Plugin : BaseUnityPlugin
         Debug.Log("Weapon Stats Grabber Loaded and Patches Applied!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 
-    //[HarmonyPatch(typeof(ItemStats), "SetBaseAttributes")]
-    //[HarmonyPatch([typeof(ItemDefinition)])]
     [HarmonyPatch(typeof(Weapon), "Initialize")]
     public class WeaponStatsInterceptor
     {
@@ -70,35 +64,6 @@ public class Plugin : BaseUnityPlugin
             }
 
             weaponPropertyList.Add(returnDTO);
-
-            /*System.Type instanceType = __instance.GetType();
-            FieldInfo[] fields = instanceType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-            foreach (var field in fields)
-            {
-                Debug.Log($"[Mod] Found Field: {field.Name} = {field.GetValue(__instance)}");*/
-
-
-                /*object fieldValue = field.GetValue(__instance);
-                if (fieldValue is PerfectRandom.Sulfur.Core.CharacterStats.CharacterStat[] statArray) {
-                    foreach (var characterStat in statArray)
-                    {
-                        if (characterStat != null)
-                        {
-                            try 
-                            {
-                                Debug.Log($"[Mod] Found Character Stat Field: {characterStat.BaseValue}");
-                            }
-                            catch (System.Exception ex)
-                            {
-                                Debug.LogError($"[Mod] Error reading value: {ex.Message}");
-                            }
-                        }
-                        else 
-                        {
-                        }
-                    }
-                }*/
-            //}
         }
     }
     
@@ -123,15 +88,6 @@ public class Plugin : BaseUnityPlugin
 
             var weaponSO = itemDef as WeaponSO;
             weaponList.Add(weaponSO);
-            // BaseDTO returnDTO = GetRelevantDTO(weaponSO);
-
-            // if (returnDTO == null) continue;
-
-            // weaponList.Add(returnDTO);
-
-            /*var InstancedDTO = InstantiatedWeaponDTO.CreateInstantiatedWeaponDTO(weaponComp);
-            weaponList.Add(InstancedDTO);
-            Destroy(weaponInstance);*/
         }
         StartCoroutine(SpawnWeapons());
     }
