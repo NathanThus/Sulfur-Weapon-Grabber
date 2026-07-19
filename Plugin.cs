@@ -61,15 +61,11 @@ public class Plugin : BaseUnityPlugin
 
             if (returnDTO == null) return;
 
-            if (weaponPropertyList.Guns[returnDTO.Name] != null)
-            {
-                return;
-            }
-            if (weaponPropertyList.Throwable[returnDTO.Name] != null)
-            {
-                return;
-            }
-            if (weaponPropertyList.Melee[returnDTO.Name] != null)
+            bool exists = weaponPropertyList.Guns.ContainsKey(returnDTO.Name) ||
+              weaponPropertyList.Melee.ContainsKey(returnDTO.Name) ||
+              weaponPropertyList.Throwable.ContainsKey(returnDTO.Name);
+
+            if (exists == true)
             {
                 return;
             }
@@ -143,7 +139,7 @@ public class Plugin : BaseUnityPlugin
 
     private IEnumerator SpawnWeapons()
     {
-        if (weaponList.Count == 0) yield break;
+        /*if (weaponList.Count == 0) yield break;
 
         while (!SpawnHelper.IsInLevel()) yield return new WaitForEndOfFrame();
 
@@ -167,7 +163,8 @@ public class Plugin : BaseUnityPlugin
 
             yield return null;
         }
-        SaveItems(weaponPropertyList);
+        SaveItems(weaponPropertyList);*/
+        yield return null;
     }
 
     private static void ClearSlots()
