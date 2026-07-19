@@ -25,7 +25,10 @@ public class CoreDTO : BaseDTO
     public Dictionary<string, float> caliberRecoil;
     public float computedSpread;
     public float spreadStrength;
-    
+    public int priceBase;
+    public int priceBuy;
+    public int priceSell;
+
 
     public static CoreDTO SetCoreWeaponStats(Weapon weapon, ValueHelpers helpers)
     {
@@ -44,6 +47,9 @@ public class CoreDTO : BaseDTO
             caliberRecoil = helpers.GetCaliberRecoil(weapon.weaponDefinition.kickPower),
             computedSpread = weapon.computedSpread,
             spreadStrength = weapon.SpreadStrength,
+            priceBase = weapon.inventoryItem.PriceBase,
+            priceBuy = weapon.inventoryItem.PriceBuy,
+            priceSell = weapon.inventoryItem.PriceSell,
         };
-    }     
+    }
 }
