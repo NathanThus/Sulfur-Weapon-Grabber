@@ -31,6 +31,7 @@ public class Plugin : BaseUnityPlugin
     DatabaseGrabber grabber = new();
     private static List<ItemDefinition> weaponList = [];
     private static List<BaseDTO> weaponPropertyList = [];
+    private static bool itHasBegun = false;
 
     private void Awake()
     {
@@ -51,18 +52,27 @@ public class Plugin : BaseUnityPlugin
             {
                 return;
             }
+
+            weapon.inventoryItem.ModifyDurability(10000000f);
+
             BaseDTO returnDTO = GetRelevantDTO(weapon);
 
             if (returnDTO == null) return;
+            if (itHasBegun == false) return;
 
-            bool exists = weaponPropertyList.Guns.ContainsKey(returnDTO.Name) ||
-              weaponPropertyList.Melee.ContainsKey(returnDTO.Name) ||
-              weaponPropertyList.Throwable.ContainsKey(returnDTO.Name);
+            bool exists = weaponPropertyList.Any(item => item.Name == returnDTO.Name);
 
             if (exists == true)
             {
                 return;
             }
+
+            byte[] pngBytes = ImageConversion.EncodeToPNG(MakeTextureReadable(weapon.ItemDefinition.artwork.texture));
+
+            // Save it to your BepInEx plugin folder for testing
+            string outputPath = Path.Combine(Paths.PluginPath, "WeaponGrabber\\Extracted Data\\Extracted Images", $"{returnDTO.Name}_icon.png");
+            File.WriteAllBytes(outputPath, pngBytes);
+            
 
             weaponPropertyList.Add(returnDTO);
         }
@@ -93,13 +103,33 @@ public class Plugin : BaseUnityPlugin
         StartCoroutine(SpawnWeapons());
     }
 
+    private static Texture2D MakeTextureReadable(Texture2D source)
+    {
+        RenderTexture renderTex = RenderTexture.GetTemporary(
+            source.width, source.height, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Linear);
+
+        Graphics.Blit(source, renderTex);
+        RenderTexture previous = RenderTexture.active;
+        RenderTexture.active = renderTex;
+
+        Texture2D readableText = new Texture2D(source.width, source.height);
+        readableText.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
+        readableText.Apply();
+
+        RenderTexture.active = previous;
+        RenderTexture.ReleaseTemporary(renderTex);
+        return readableText;
+    }
+
     private IEnumerator SpawnWeapons()
     {
-        /*if (weaponList.Count == 0) yield break;
+        if (weaponList.Count == 0) yield break;
 
         while (!SpawnHelper.IsInLevel()) yield return new WaitForEndOfFrame();
 
         ClearSlots();
+
+        itHasBegun = true;
 
         SpawnHelper.SetupWeaponSpawning();
 
@@ -119,8 +149,7 @@ public class Plugin : BaseUnityPlugin
 
             yield return null;
         }
-        SaveItems(weaponPropertyList);*/
-        yield return null;
+        SaveItems(weaponPropertyList);
     }
 
     private static void ClearSlots()
@@ -130,8 +159,9 @@ public class Plugin : BaseUnityPlugin
         SpawnHelper.GetItemInWeaponSlot(InventorySlot.Gadget0)?.DropFromPlayer();
     }
 
-    private static void SaveItems(CategoryDTO weaponPropertyList)
+    private static void SaveItems(List<BaseDTO> weaponPropertyList)
     {
+        Debug.Log(weaponPropertyList);
         var settings = new JsonSerializerSettings
         {
             ContractResolver = new CustomContractResolver(),
@@ -140,7 +170,7 @@ public class Plugin : BaseUnityPlugin
 
         string json = JsonConvert.SerializeObject(weaponPropertyList, settings);
 
-        string path = Path.Combine(Paths.GameRootPath, nameof(weaponPropertyList) + ".json");
+        string path = Path.Combine(Paths.PluginPath, "WeaponGrabber\\Extracted Data", nameof(weaponPropertyList) + ".json");
         File.WriteAllText(path, json);
     }
 
@@ -159,26 +189,6 @@ public class Plugin : BaseUnityPlugin
                 return null;
             default: // This covers all guns.
                 return WeaponDTO.CreateWeaponDTO(weapon, helper);
-        }
-    }
-
-    private static void AddToCategoryDTO(BaseDTO weapon)
-    {
-        switch (weapon?.weaponType)
-        {
-            case "Throwable":
-                weaponPropertyList.Throwable.Add(weapon.Name, weapon);
-                break;
-            case "Melee":
-                weaponPropertyList.Melee.Add(weapon.Name, weapon);
-                break;
-            case null:
-                break;
-            case "End":
-                break;
-            default: // This covers all guns.
-                weaponPropertyList.Guns.Add(weapon.Name, weapon);
-                break;
         }
     }
 }
