@@ -11,6 +11,7 @@ using PerfectRandom.Sulfur.Core.CharacterStats;
 using PerfectRandom.Sulfur.Core.Items;
 using PerfectRandom.Sulfur.Core.Weapons;
 using UnityEngine;
+using System.Reflection;
 
 public class ValueHelpers
 {
@@ -49,19 +50,23 @@ public class ValueHelpers
         return attachments;
     }
 
-    public class PRWrapper : Holdable
+    public StatModifier GetRunSpeedMod(Weapon weapon)
     {
-        public StatModifier ExposeWeightClassConversion(Holdable weapon)
-        {
-            return GetRunSpeedModifier();
-        }
-    }
+        Type targetType = weapon.GetType();
+        MethodInfo methodInfo = targetType.GetMethod("GetRunSpeedModifier", 
+            BindingFlags.NonPublic | BindingFlags.Instance);
 
-    public class PRWrapperWeapon : Weapon
-    {
-        public void SetupWeaponStats(PRWrapperWeapon weapon)
+       if (methodInfo != null)
         {
-            weapon.SetupStats();
+            // Pass null for parameters if the method takes no arguments
+            var speedMod = methodInfo.Invoke(weapon, null); 
+            return speedMod as StatModifier;
         }
+        else
+        {
+            Debug.LogError("Method not found!");
+            return null;
+        } 
+
     }
 }
