@@ -45,7 +45,13 @@ public class ValueHelpers
         List<string> attachments = [];
         foreach (var att in compatibleAttachments)
         {
-            attachments.Add(att.displayName);
+            if (attachments.Contains(att.LocalizedDisplayName))
+            {
+                continue;
+            }
+            else {
+                attachments.Add(att.LocalizedDisplayName);
+            }
         }
         return attachments;
     }
@@ -58,13 +64,27 @@ public class ValueHelpers
 
        if (methodInfo != null)
         {
-            // Pass null for parameters if the method takes no arguments
             var speedMod = methodInfo.Invoke(weapon, null); 
             return speedMod as StatModifier;
         }
         else
         {
             Debug.LogError("Method not found!");
+            return null;
+        } 
+    }
+    public List<string> GetCompatibleAttachments(Weapon weapon)
+    {
+        Type targetType = weapon.GetType();
+        FieldInfo fieldInfo = targetType.GetField("compatibleAttachments", 
+            BindingFlags.NonPublic | BindingFlags.Instance);
+
+       if (fieldInfo != null)
+        {
+            return GetCompatibleAttachments(fieldInfo.GetValue(weapon) as List<ItemDefinition>);
+        }
+        else
+        {
             return null;
         } 
     }
