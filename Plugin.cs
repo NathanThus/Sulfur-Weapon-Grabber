@@ -98,6 +98,7 @@ public class Plugin : BaseUnityPlugin
             if (itemDef?.showcasePrefab == null) continue;
 
             var weaponSO = itemDef as WeaponSO;
+            weaponSO?.alwaysSpawnWithFullDurability = true;
             weaponList.Add(weaponSO);
         }
         StartCoroutine(SpawnWeapons());

@@ -27,7 +27,7 @@ public class CoreDTO : BaseDTO
     public Dictionary<string, float> caliberRecoil;
     public float computedSpread;
     public float spreadStrength;
-    public int priceBase;
+    public int priceBuy;
     public int priceSell;
     public List<string> CompatibleAttachments;
 
@@ -49,8 +49,8 @@ public class CoreDTO : BaseDTO
             caliberRecoil = helpers.GetCaliberRecoil(weapon.weaponDefinition.kickPower),
             computedSpread = weapon.computedSpread,
             spreadStrength = weapon.SpreadStrength,
-            priceBase = weapon.ItemDefinition.basePrice,
-            priceSell = (int)Mathf.Ceil((float)weapon.ItemDefinition.basePrice / 2),
+            priceBuy = weapon.inventoryItem.PriceBuy,
+            priceSell = weapon.inventoryItem.PriceSell,
             RunSpeedModifier = Math.Round(helpers.GetRunSpeedMod(weapon).Value, 2),
             CompatibleAttachments = helpers.GetCompatibleAttachments(weapon),
         };

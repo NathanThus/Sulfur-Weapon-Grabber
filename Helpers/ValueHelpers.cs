@@ -62,7 +62,7 @@ public class ValueHelpers
         MethodInfo methodInfo = targetType.GetMethod("GetRunSpeedModifier", 
             BindingFlags.NonPublic | BindingFlags.Instance);
 
-       if (methodInfo != null)
+        if (methodInfo != null)
         {
             var speedMod = methodInfo.Invoke(weapon, null); 
             return speedMod as StatModifier;
@@ -79,7 +79,7 @@ public class ValueHelpers
         FieldInfo fieldInfo = targetType.GetField("compatibleAttachments", 
             BindingFlags.NonPublic | BindingFlags.Instance);
 
-       if (fieldInfo != null)
+        if (fieldInfo != null)
         {
             return GetCompatibleAttachments(fieldInfo.GetValue(weapon) as List<ItemDefinition>);
         }
@@ -91,12 +91,12 @@ public class ValueHelpers
     public float GetAimPenalty(Weapon weapon)
     {
         Type targetType = weapon.GetType();
-        FieldInfo fieldInfo = targetType.GetField("aimPenalty", 
+        MethodInfo methodInfo = targetType.GetMethod("get_aimPenalty", 
             BindingFlags.NonPublic | BindingFlags.Instance);
 
-       if (fieldInfo != null)
+        if (methodInfo != null)
         {
-            return (float)fieldInfo.GetValue(weapon);
+            return (float)methodInfo.Invoke(weapon, null); 
         }
         else
         {
