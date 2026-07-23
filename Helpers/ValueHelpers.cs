@@ -88,4 +88,19 @@ public class ValueHelpers
             return null;
         } 
     }
+    public float GetAimPenalty(Weapon weapon)
+    {
+        Type targetType = weapon.GetType();
+        FieldInfo fieldInfo = targetType.GetField("aimPenalty", 
+            BindingFlags.NonPublic | BindingFlags.Instance);
+
+       if (fieldInfo != null)
+        {
+            return (float)fieldInfo.GetValue(weapon);
+        }
+        else
+        {
+            return 0f;
+        } 
+    }
 }
