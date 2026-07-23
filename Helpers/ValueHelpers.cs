@@ -67,6 +67,5 @@ public class ValueHelpers
             Debug.LogError("Method not found!");
             return null;
         } 
-
     }
 }
