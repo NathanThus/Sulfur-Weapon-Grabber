@@ -6,6 +6,7 @@ using PerfectRandom.Sulfur.Core.CharacterStats;
 using PerfectRandom.Sulfur.Core.Items;
 using PerfectRandom.Sulfur.Core.Stats;
 using PerfectRandom.Sulfur.Core.Weapons;
+using UnityEngine;
 
 [Serializable]
 public class CoreDTO : BaseDTO
@@ -21,13 +22,14 @@ public class CoreDTO : BaseDTO
     public string projectileType;
     public float loudness;
     public HoldableWeightClass weightClass;
+    public double RunSpeedModifier;
     public Dictionary<string, float> caliberSpread;
     public Dictionary<string, float> caliberRecoil;
     public float computedSpread;
     public float spreadStrength;
     public int priceBase;
-    public int priceBuy;
     public int priceSell;
+    public List<string> CompatibleAttachments;
 
 
     public static CoreDTO SetCoreWeaponStats(Weapon weapon, ValueHelpers helpers)
@@ -47,9 +49,10 @@ public class CoreDTO : BaseDTO
             caliberRecoil = helpers.GetCaliberRecoil(weapon.weaponDefinition.kickPower),
             computedSpread = weapon.computedSpread,
             spreadStrength = weapon.SpreadStrength,
-            priceBase = weapon.inventoryItem.PriceBase,
-            priceBuy = weapon.inventoryItem.PriceBuy,
-            priceSell = weapon.inventoryItem.PriceSell,
+            priceBase = weapon.ItemDefinition.basePrice,
+            priceSell = (int)Mathf.Ceil((float)weapon.ItemDefinition.basePrice / 2),
+            RunSpeedModifier = Math.Round(helpers.GetRunSpeedMod(weapon).Value, 2),
+            CompatibleAttachments = helpers.GetCompatibleAttachments(weapon),
         };
     }
 }
