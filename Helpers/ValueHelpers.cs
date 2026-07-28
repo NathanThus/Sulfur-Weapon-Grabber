@@ -40,7 +40,7 @@ public class ValueHelpers
         return spread;
     }
 
-    public List<string> GetCompatibleAttachments(List<ItemDefinition> compatibleAttachments)
+    public List<string> IterateCompatibleAttachments(List<ItemDefinition> compatibleAttachments)
     {
         List<string> attachments = [];
         foreach (var att in compatibleAttachments)
@@ -73,21 +73,6 @@ public class ValueHelpers
             return null;
         } 
     }
-    public List<string> GetCompatibleAttachments(Weapon weapon)
-    {
-        Type targetType = weapon.GetType();
-        FieldInfo fieldInfo = targetType.GetField("compatibleAttachments", 
-            BindingFlags.NonPublic | BindingFlags.Instance);
-
-        if (fieldInfo != null)
-        {
-            return GetCompatibleAttachments(fieldInfo.GetValue(weapon) as List<ItemDefinition>);
-        }
-        else
-        {
-            return null;
-        } 
-    }
     public float GetAimPenalty(Weapon weapon)
     {
         Type targetType = weapon.GetType();
@@ -103,25 +88,25 @@ public class ValueHelpers
             return 0f;
         } 
     }
-    public float GetfReloadTime(Weapon weapon)
+    public List<string> GetCompatibleAttachments(Weapon weapon)
     {
         Type targetType = weapon.GetType();
-        FieldInfo fieldInfo = targetType.GetField("fReloadTime", 
+        FieldInfo fieldInfo = targetType.GetField("compatibleAttachments", 
             BindingFlags.NonPublic | BindingFlags.Instance);
 
         if (fieldInfo != null)
         {
-            return (float)fieldInfo.GetValue(weapon);
+            return IterateCompatibleAttachments(fieldInfo.GetValue(weapon) as List<ItemDefinition>);
         }
         else
         {
-            return 0f;
+            return null;
         } 
     }
-    public float GetfReloadTimer(Weapon weapon)
+    public float GetChargeAmount(Weapon weapon)
     {
         Type targetType = weapon.GetType();
-        FieldInfo fieldInfo = targetType.GetField("fReloadTimer", 
+        FieldInfo fieldInfo = targetType.GetField("chargeAmount", 
             BindingFlags.NonPublic | BindingFlags.Instance);
 
         if (fieldInfo != null)

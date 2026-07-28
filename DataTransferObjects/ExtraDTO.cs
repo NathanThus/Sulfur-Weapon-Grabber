@@ -12,6 +12,7 @@ public class ExtraDTO : BaseDTO
 {
     public int shotsToReachFullSpread;
     public float timeToCooldownSpread;
+    public float chargeAmount;
     
     public static ExtraDTO SetExtraWeaponStats(Weapon weapon, ValueHelpers helpers)
     {

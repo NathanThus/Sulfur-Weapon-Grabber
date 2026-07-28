@@ -160,7 +160,7 @@ public class Plugin : BaseUnityPlugin
             case WeaponTypes.Throwable:
                 return ThrowableDTO.CreateThrowableDTO(weapon);
             case WeaponTypes.Melee:
-                return MeleeDTO.CreateMeleeDTO(weapon);
+                return MeleeDTO.CreateMeleeDTO(weapon, helper);
             case null:
                 return null;
             case WeaponTypes.End:

@@ -11,6 +11,7 @@ using UnityEngine;
 [Serializable]
 public class CoreDTO : BaseDTO
 {
+    public float Damage;
     public string baseCaliber;
     public float innateDamageMultiplier;
     public float weaponTypeMultiplier;
@@ -30,6 +31,11 @@ public class CoreDTO : BaseDTO
     public int priceBuy;
     public int priceSell;
     public List<string> CompatibleAttachments;
+    public float ParryAngle;
+    public int meleeHitsGiven;
+    public int MeleeHitsPerAttackMax;
+    public int maxParries;
+    public string typeToParry;
 
 
     public static CoreDTO SetCoreWeaponStats(Weapon weapon, ValueHelpers helpers)
@@ -53,6 +59,24 @@ public class CoreDTO : BaseDTO
             priceSell = weapon.inventoryItem.PriceSell,
             RunSpeedModifier = Math.Round(helpers.GetRunSpeedMod(weapon).Value, 2),
             CompatibleAttachments = helpers.GetCompatibleAttachments(weapon),
+        };
+    }
+
+    public static CoreDTO SetCoreMeleeStats(Weapon weapon, ValueHelpers helpers)
+    {
+        return new CoreDTO
+        {
+            Damage = weapon.Damage,
+            weaponType = EnumConversion.WeaponClassToString(weapon.weaponDefinition.weaponType),
+            weightClass = weapon.weaponDefinition.weightClass,
+            priceBuy = weapon.inventoryItem.PriceBuy,
+            priceSell = weapon.inventoryItem.PriceSell,
+            RunSpeedModifier = Math.Round(helpers.GetRunSpeedMod(weapon).Value, 2),
+            ParryAngle = weapon.ParryAngle,
+            meleeHitsGiven = weapon.meleeHitsGiven,
+            MeleeHitsPerAttackMax = weapon.MeleeHitsPerAttackMax,
+            maxParries = weapon.weaponDefinition.maxParries,
+            typeToParry = weapon.weaponDefinition.typeToParry.ToString()
         };
     }
 }
