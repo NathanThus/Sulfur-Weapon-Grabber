@@ -12,7 +12,6 @@ public class ExtraDTO : BaseDTO
 {
     public int shotsToReachFullSpread;
     public float timeToCooldownSpread;
-    public float aimPenalty;
     
     public static ExtraDTO SetExtraWeaponStats(Weapon weapon, ValueHelpers helpers)
     {
@@ -20,7 +19,6 @@ public class ExtraDTO : BaseDTO
         {
             shotsToReachFullSpread = weapon.weaponDefinition.shotsToReachFullSpread,
             timeToCooldownSpread = weapon.weaponDefinition.timeToCooldownSpread,
-            aimPenalty = helpers.GetAimPenalty(weapon)
         };
     }
 }

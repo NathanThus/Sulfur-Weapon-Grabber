@@ -103,4 +103,34 @@ public class ValueHelpers
             return 0f;
         } 
     }
+    public float GetfReloadTime(Weapon weapon)
+    {
+        Type targetType = weapon.GetType();
+        FieldInfo fieldInfo = targetType.GetField("fReloadTime", 
+            BindingFlags.NonPublic | BindingFlags.Instance);
+
+        if (fieldInfo != null)
+        {
+            return (float)fieldInfo.GetValue(weapon);
+        }
+        else
+        {
+            return 0f;
+        } 
+    }
+    public float GetfReloadTimer(Weapon weapon)
+    {
+        Type targetType = weapon.GetType();
+        FieldInfo fieldInfo = targetType.GetField("fReloadTimer", 
+            BindingFlags.NonPublic | BindingFlags.Instance);
+
+        if (fieldInfo != null)
+        {
+            return (float)fieldInfo.GetValue(weapon);
+        }
+        else
+        {
+            return 0f;
+        } 
+    }
 }
