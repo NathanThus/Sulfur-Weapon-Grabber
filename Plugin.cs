@@ -158,7 +158,7 @@ public class Plugin : BaseUnityPlugin
         switch (weapon?.weaponDefinition.weaponType)
         {
             case WeaponTypes.Throwable:
-                return ThrowableDTO.CreateThrowableDTO(weapon);
+                return ThrowableDTO.CreateThrowableDTO(weapon, helper);
             case WeaponTypes.Melee:
                 return MeleeDTO.CreateMeleeDTO(weapon, helper);
             case null:

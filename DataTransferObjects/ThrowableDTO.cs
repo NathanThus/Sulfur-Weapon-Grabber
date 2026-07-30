@@ -5,13 +5,15 @@ using PerfectRandom.Sulfur.Core.Weapons;
 [Serializable]
 public class ThrowableDTO : BaseDTO
 {
-    public static ThrowableDTO CreateThrowableDTO(Weapon weapon)
+    public static ThrowableDTO CreateThrowableDTO(Weapon weapon, ValueHelpers helpers)
     {
+        ModifiableHelper modifiableHelper = new();
         return new ThrowableDTO
         {
-            Name = weapon.name,
-            displayName = weapon.weaponDefinition.LocalizedDisplayName,
-            weaponType = EnumConversion.WeaponClassToString(weapon.weaponDefinition.weaponType)
+            Name = weapon.weaponDefinition.LocalizedDisplayName,
+            Core = CoreDTO.SetCoreThrowableStats(weapon, helpers),
+            Modifiable = modifiableHelper.GetModifiableStats(weapon),
+            Extra = ExtraDTO.SetExtraThrowableStats(weapon, helpers)
         };
     }
 }

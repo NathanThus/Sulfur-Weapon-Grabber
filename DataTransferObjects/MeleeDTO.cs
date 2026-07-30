@@ -12,7 +12,8 @@ public class MeleeDTO : BaseDTO
         {
             Name = weapon.weaponDefinition.LocalizedDisplayName,
             Core = CoreDTO.SetCoreMeleeStats(weapon, helpers),
-            Modifiable = modifiableHelper.GetModifiableStats(weapon)
+            Modifiable = modifiableHelper.GetModifiableStats(weapon),
+            Extra = ExtraDTO.SetExtraMeleeStats(weapon, helpers)
         };
     }
 }

@@ -11,11 +11,11 @@ using UnityEngine;
 [Serializable]
 public class CoreDTO : BaseDTO
 {
-    public float Damage;
     public string baseCaliber;
-    public float innateDamageMultiplier;
+    public float damageMultiplier;
     public float weaponTypeMultiplier;
-    public float baseCaliberDmgPerProj;
+    public float totalDamageMultiplier;
+    public float Damage;
     public float magazineSize;
     public float ammoPerShot;
     public float bulletSpeed;
@@ -27,7 +27,6 @@ public class CoreDTO : BaseDTO
     public Dictionary<string, float> caliberSpread;
     public Dictionary<string, float> caliberRecoil;
     public float computedSpread;
-    public float spreadStrength;
     public int priceBuy;
     public int priceSell;
     public List<string> CompatibleAttachments;
@@ -43,9 +42,10 @@ public class CoreDTO : BaseDTO
         return new CoreDTO
         {
             baseCaliber = EnumConversion.CaliberTypeToString(weapon.Caliber),
-            baseCaliberDmgPerProj = weapon.Damage,
-            innateDamageMultiplier = weapon.weaponDefinition.damageMultiplier,
+            Damage = weapon.Damage,
+            damageMultiplier = weapon.weaponDefinition.damageMultiplier,
             weaponTypeMultiplier = WeaponTypeDataExt.GetDamageMultiplier(weapon.weaponDefinition.weaponType),
+            totalDamageMultiplier = weapon.weaponDefinition.damageMultiplier * WeaponTypeDataExt.GetDamageMultiplier(weapon.weaponDefinition.weaponType),
             weaponType = EnumConversion.WeaponClassToString(weapon.weaponDefinition.weaponType),
             bulletSpeed = weapon.bulletSpeed,
             weightClass = weapon.weaponDefinition.weightClass,
@@ -54,7 +54,6 @@ public class CoreDTO : BaseDTO
             caliberSpread = helpers.GetCaliberSpread(weapon.weaponDefinition.spreadPerCaliber),
             caliberRecoil = helpers.GetCaliberRecoil(weapon.weaponDefinition.kickPower),
             computedSpread = weapon.computedSpread,
-            spreadStrength = weapon.SpreadStrength,
             priceBuy = weapon.inventoryItem.PriceBuy,
             priceSell = weapon.inventoryItem.PriceSell,
             RunSpeedModifier = Math.Round(helpers.GetRunSpeedMod(weapon).Value, 2),
@@ -77,6 +76,18 @@ public class CoreDTO : BaseDTO
             MeleeHitsPerAttackMax = weapon.MeleeHitsPerAttackMax,
             maxParries = weapon.weaponDefinition.maxParries,
             typeToParry = weapon.weaponDefinition.typeToParry.ToString()
+        };
+    }
+    public static CoreDTO SetCoreThrowableStats(Weapon weapon, ValueHelpers helpers)
+    {
+        return new CoreDTO
+        {
+            Damage = weapon.Damage,
+            weaponType = EnumConversion.WeaponClassToString(weapon.weaponDefinition.weaponType),
+            weightClass = weapon.weaponDefinition.weightClass,
+            priceBuy = weapon.inventoryItem.PriceBuy,
+            priceSell = weapon.inventoryItem.PriceSell,
+            RunSpeedModifier = Math.Round(helpers.GetRunSpeedMod(weapon).Value, 2)
         };
     }
 }
