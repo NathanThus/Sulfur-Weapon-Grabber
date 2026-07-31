@@ -31,6 +31,7 @@ public class Plugin : BaseUnityPlugin
     DatabaseGrabber grabber = new();
     private static List<ItemDefinition> weaponList = [];
     private static List<BaseDTO> weaponPropertyList = [];
+    private static bool itHasBegun = false;
 
     private void Awake()
     {
@@ -51,17 +52,22 @@ public class Plugin : BaseUnityPlugin
             {
                 return;
             }
+
+            weapon.inventoryItem.ModifyDurability(10000000f);
+
             BaseDTO returnDTO = GetRelevantDTO(weapon);
 
             if (returnDTO == null) return;
+            if (itHasBegun == false) return;
 
-            foreach (var wep in weaponPropertyList)
+            bool exists = weaponPropertyList.Any(item => item.Name == returnDTO.Name);
+
+            if (exists == true)
             {
-                if (wep.Name == returnDTO.Name)
-                {
-                    return;
-                }
+                return;
             }
+            
+            ImageHelpers.SaveBaseImage(weapon, returnDTO);
 
             weaponPropertyList.Add(returnDTO);
         }
@@ -83,10 +89,11 @@ public class Plugin : BaseUnityPlugin
             if (itemDef?.slotType != SlotType.Weapon & itemDef?.slotType != SlotType.BasicMelee & itemDef?.slotType != SlotType.Gadget) continue;
 
             if (itemDef is not WeaponSO) continue;
-            if (itemDef.prefab == null) continue;
-            if (itemDef.showcasePrefab == null) continue;
+            if (itemDef?.prefab == null) continue;
+            if (itemDef?.showcasePrefab == null) continue;
 
             var weaponSO = itemDef as WeaponSO;
+            weaponSO?.alwaysSpawnWithFullDurability = true;
             weaponList.Add(weaponSO);
         }
         StartCoroutine(SpawnWeapons());
@@ -99,6 +106,8 @@ public class Plugin : BaseUnityPlugin
         while (!SpawnHelper.IsInLevel()) yield return new WaitForEndOfFrame();
 
         ClearSlots();
+
+        itHasBegun = true;
 
         SpawnHelper.SetupWeaponSpawning();
 
@@ -130,6 +139,7 @@ public class Plugin : BaseUnityPlugin
 
     private static void SaveItems(List<BaseDTO> weaponPropertyList)
     {
+        Debug.Log(weaponPropertyList);
         var settings = new JsonSerializerSettings
         {
             ContractResolver = new CustomContractResolver(),
@@ -138,7 +148,7 @@ public class Plugin : BaseUnityPlugin
 
         string json = JsonConvert.SerializeObject(weaponPropertyList, settings);
 
-        string path = Path.Combine(Paths.GameRootPath, nameof(weaponPropertyList) + ".json");
+        string path = Path.Combine(Paths.PluginPath, "WeaponGrabber\\Extracted Data", nameof(weaponPropertyList) + ".json");
         File.WriteAllText(path, json);
     }
 
@@ -148,9 +158,9 @@ public class Plugin : BaseUnityPlugin
         switch (weapon?.weaponDefinition.weaponType)
         {
             case WeaponTypes.Throwable:
-                return ThrowableDTO.CreateThrowableDTO(weapon);
+                return ThrowableDTO.CreateThrowableDTO(weapon, helper);
             case WeaponTypes.Melee:
-                return MeleeDTO.CreateMeleeDTO(weapon);
+                return MeleeDTO.CreateMeleeDTO(weapon, helper);
             case null:
                 return null;
             case WeaponTypes.End:

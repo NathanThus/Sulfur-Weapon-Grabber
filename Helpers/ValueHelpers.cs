@@ -11,6 +11,7 @@ using PerfectRandom.Sulfur.Core.CharacterStats;
 using PerfectRandom.Sulfur.Core.Items;
 using PerfectRandom.Sulfur.Core.Weapons;
 using UnityEngine;
+using System.Reflection;
 
 public class ValueHelpers
 {
@@ -39,29 +40,82 @@ public class ValueHelpers
         return spread;
     }
 
-    public List<string> GetCompatibleAttachments(List<ItemDefinition> compatibleAttachments)
+    public List<string> IterateCompatibleAttachments(List<ItemDefinition> compatibleAttachments)
     {
         List<string> attachments = [];
         foreach (var att in compatibleAttachments)
         {
-            attachments.Add(att.displayName);
+            if (attachments.Contains(att.LocalizedDisplayName))
+            {
+                continue;
+            }
+            else {
+                attachments.Add(att.LocalizedDisplayName);
+            }
         }
         return attachments;
     }
 
-    public class PRWrapper : Holdable
+    public StatModifier GetRunSpeedMod(Weapon weapon)
     {
-        public StatModifier ExposeWeightClassConversion(Holdable weapon)
-        {
-            return GetRunSpeedModifier();
-        }
-    }
+        Type targetType = weapon.GetType();
+        MethodInfo methodInfo = targetType.GetMethod("GetRunSpeedModifier", 
+            BindingFlags.NonPublic | BindingFlags.Instance);
 
-    public class PRWrapperWeapon : Weapon
-    {
-        public void SetupWeaponStats(PRWrapperWeapon weapon)
+        if (methodInfo != null)
         {
-            weapon.SetupStats();
+            var speedMod = methodInfo.Invoke(weapon, null); 
+            return speedMod as StatModifier;
         }
+        else
+        {
+            Debug.LogError("Method not found!");
+            return null;
+        } 
+    }
+    public float GetAimPenalty(Weapon weapon)
+    {
+        Type targetType = weapon.GetType();
+        MethodInfo methodInfo = targetType.GetMethod("get_aimPenalty", 
+            BindingFlags.NonPublic | BindingFlags.Instance);
+
+        if (methodInfo != null)
+        {
+            return (float)methodInfo.Invoke(weapon, null); 
+        }
+        else
+        {
+            return 0f;
+        } 
+    }
+    public List<string> GetCompatibleAttachments(Weapon weapon)
+    {
+        Type targetType = weapon.GetType();
+        FieldInfo fieldInfo = targetType.GetField("compatibleAttachments", 
+            BindingFlags.NonPublic | BindingFlags.Instance);
+
+        if (fieldInfo != null)
+        {
+            return IterateCompatibleAttachments(fieldInfo.GetValue(weapon) as List<ItemDefinition>);
+        }
+        else
+        {
+            return null;
+        } 
+    }
+    public float GetChargeAmount(Weapon weapon)
+    {
+        Type targetType = weapon.GetType();
+        FieldInfo fieldInfo = targetType.GetField("chargeAmount", 
+            BindingFlags.NonPublic | BindingFlags.Instance);
+
+        if (fieldInfo != null)
+        {
+            return (float)fieldInfo.GetValue(weapon);
+        }
+        else
+        {
+            return 0f;
+        } 
     }
 }

@@ -1,19 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Mono.Cecil.Cil;
-using PerfectRandom.Sulfur.Core;
-using PerfectRandom.Sulfur.Core.CharacterStats;
-using PerfectRandom.Sulfur.Core.Items;
-using PerfectRandom.Sulfur.Core.Stats;
 using PerfectRandom.Sulfur.Core.Weapons;
 
 [Serializable]
 public class WeaponDTO : BaseDTO
 {
-    public CoreDTO Core;
-    public Dictionary<string, float> Modifiable;
-    public ExtraDTO Extra;
     public static WeaponDTO CreateWeaponDTO(Weapon weapon, ValueHelpers helpers)
     {
         ModifiableHelper modifiableHelper = new();

@@ -5,13 +5,15 @@ using PerfectRandom.Sulfur.Core.Weapons;
 [Serializable]
 public class MeleeDTO : BaseDTO
 {
-    public static MeleeDTO CreateMeleeDTO(Weapon weapon)
+    public static MeleeDTO CreateMeleeDTO(Weapon weapon, ValueHelpers helpers)
     {
+        ModifiableHelper modifiableHelper = new();
         return new MeleeDTO
         {
-            Name = weapon.name,
-            displayName = weapon.weaponDefinition.LocalizedDisplayName,
-            weaponType = EnumConversion.WeaponClassToString(weapon.weaponDefinition.weaponType)
+            Name = weapon.weaponDefinition.LocalizedDisplayName,
+            Core = CoreDTO.SetCoreMeleeStats(weapon, helpers),
+            Modifiable = modifiableHelper.GetModifiableStats(weapon),
+            Extra = ExtraDTO.SetExtraMeleeStats(weapon, helpers)
         };
     }
 }
