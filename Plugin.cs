@@ -147,8 +147,10 @@ public class Plugin : BaseUnityPlugin
         };
 
         string json = JsonConvert.SerializeObject(weaponPropertyList, settings);
-
-        string path = Path.Combine(Paths.PluginPath, "WeaponGrabber\\Extracted Data", nameof(weaponPropertyList) + ".json");
+        string rootDir = Paths.GameRootPath;
+        string folderPath = Path.Combine(rootDir, "Extracted Data\\Weapons\\");
+        Directory.CreateDirectory(folderPath);
+        string path = Path.Combine(folderPath, "weaponPropertyList.json");
         File.WriteAllText(path, json);
     }
 

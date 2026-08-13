@@ -20,7 +20,7 @@ public class CustomContractResolver : DefaultContractResolver
             property.Order = HighPriority;
         }
 
-        property.DefaultValueHandling = DefaultValueHandling.Ignore;
+        property.NullValueHandling = NullValueHandling.Ignore;
 
         return property;
     }

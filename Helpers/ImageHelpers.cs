@@ -2,6 +2,7 @@ using System.IO;
 using BepInEx;
 using PerfectRandom.Sulfur.Core.Weapons;
 using UnityEngine;
+using System.Text.RegularExpressions;
 
 public class ImageHelpers {
 
@@ -10,7 +11,12 @@ public class ImageHelpers {
     {
         byte[] pngBytes = ImageConversion.EncodeToPNG(MakeTextureReadable(weapon.ItemDefinition.artwork.texture));
 
-        string outputPath = Path.Combine(Paths.PluginPath, "WeaponGrabber\\Extracted Data\\Extracted Images\\Base", $"{returnDTO.Name}_base_icon.png");
+        string name = Regex.Replace(returnDTO.Name, @"[^a-zA-Z0-9\s\(\)\[\]\-]", "");
+        string rootDir = Paths.GameRootPath;
+        string folderPath = Path.Combine(rootDir, "Extracted Data\\Weapons\\Images\\");
+        Directory.CreateDirectory(folderPath);
+
+        string outputPath = Path.Combine(folderPath, $"{name.ToLower().Replace(" ", "_")}.png");
         File.WriteAllBytes(outputPath, pngBytes);
     }
 
