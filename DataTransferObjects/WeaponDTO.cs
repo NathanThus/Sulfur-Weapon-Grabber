@@ -10,6 +10,7 @@ public class WeaponDTO : BaseDTO
         return new WeaponDTO
         {
             Name = weapon.weaponDefinition.LocalizedDisplayName,
+            LocalizedFlavor = weapon.weaponDefinition.LocalizedFlavor,
             Core = CoreDTO.SetCoreWeaponStats(weapon, helpers),
             Modifiable = modifiableHelper.GetModifiableStats(weapon),
             Extra = ExtraDTO.SetExtraWeaponStats(weapon, helpers)
