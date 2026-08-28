@@ -35,6 +35,7 @@ public class CoreDTO : BaseDTO
     public int MeleeHitsPerAttackMax;
     public int maxParries;
     public string typeToParry;
+    public float KnockbackForceMultiplier;
 
 
     public static CoreDTO SetCoreWeaponStats(Weapon weapon, ValueHelpers helpers)
@@ -58,6 +59,7 @@ public class CoreDTO : BaseDTO
             priceSell = weapon.inventoryItem.PriceSell,
             RunSpeedModifier = Math.Round(helpers.GetRunSpeedMod(weapon).Value, 2),
             CompatibleAttachments = helpers.GetCompatibleAttachments(weapon),
+            KnockbackForceMultiplier = weapon.KnockbackForceMultiplier
         };
     }
 
